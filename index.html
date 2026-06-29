@@ -6,51 +6,65 @@ html<!DOCTYPE html>
 <title>TTS GAME 50x50</title>
 <style>
   :root {
-    --box-size: 20px;
+    --box-size: 18px; /* Dikecilin dikit biar 50 kotak muat di laptop */
+    --gap: 1px;
     --bg: #111;
-    --box: #444; /* Abu-abu sesuai minta */
+    --box: #444; 
     --border: #fff;
-    --text: #fff; /* Teks putih */
+    --text: #fff;
     --accent: #00ff88;
   }
+    * { box-sizing: border-box; } /* WAJIB INI BIAR GAK MELEBAR */
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center;
+    overflow-x: hidden; /* Biar gak bisa scroll ke kanan */
   }
   header {
-    width: 100%; max-width: 1000px; padding: 10px;
-    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; max-width: calc(50 * var(--box-size) + 51 * var(--gap)); /* Sama lebar ama board */
+    padding: 10px; display: flex; justify-content: space-between; align-items: center;
     background: #1a1a1a; border-bottom: 2px solid var(--border);
   }
   #timer { color: var(--accent); font-weight:bold; }
   #score { color: #ffd700; font-weight:bold; }
   button { background: var(--accent); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+  #board-wrapper { /* Bungkus baru biar bisa di-scroll kalau layar kecil */
+    width: 100%;
+    overflow-x: auto; 
+    display: flex;
+    justify-content: center; /* Biar di tengah terus */
+  }
+
   #board {
     display: grid;
     grid-template-columns: repeat(50, var(--box-size));
-    gap: 1px; background: var(--border); padding: 1px; margin: 10px 0;
-    overflow: auto; max-width: 100vw;
+    grid-template-rows: repeat(50, var(--box-size)); /* DIKUNCI 50x50 */
+    gap: var(--gap); 
+    background: var(--border); 
+    padding: var(--gap); 
+    margin: 10px 0;
+    width: fit-content; /* Ikutin isi doang, gak melebar */
   }
 .cell {
     width: var(--box-size); height: var(--box-size);
-    background: var(--box); position: relative; /* WAJIB relative biar nomor bisa di atas */
+    background: var(--box); position: relative;
     border: 1px solid var(--border);
   }
-.cell.black { background: #000; } /* Kotak mati */
+.cell.black { background: #000; }
 .cell input {
-    width: 100%; height: 100%; border: none; background: transparent; /* Biar nomor keliatan */
+    width: 100%; height: 100%; border: none; background: transparent;
     color: var(--text); text-align: center; text-transform: uppercase;
-    font-size: 12px; font-weight: bold; padding: 0; position: relative; z-index: 1;
+    font-size: 11px; font-weight: bold; padding: 0; position: relative; z-index: 1;
   }
 .cell input:focus { outline: 2px solid var(--accent); }
-.cell.num { /* INI KUNCINYA BOS */
+.cell.num {
     position: absolute; top: 0; left: 1px;
-    font-size: 7px; line-height: 1; color: var(--text);
+    font-size: 6px; line-height: 1; color: var(--text);
     pointer-events: none; z-index: 2; font-weight: bold;
   }
 
-  main { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 10px; }
+  main { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 10px; max-width: 1000px; }
 .clues { max-width: 400px; font-size: 14px;}
 .clues h3 { margin: 5px 0; border-bottom: 1px solid var(--border); }
 </style>
@@ -68,7 +82,9 @@ html<!DOCTYPE html>
   </div>
 </header>
 
-<div id="board"></div>
+<div id="board-wrapper"> <!-- DIBUNGKUS BIAR DI TENGAH -->
+  <div id="board"></div>
+</div>
 
 <main>
   <div class="clues">
@@ -86,7 +102,6 @@ html<!DOCTYPE html>
 <audio id="sfxMenang" src="https://cdn.freesound.org/previews/456/456588_9498993-lq.mp3"></audio>
 
 <script>
-/* ISI SOAL DULU BOS. KALO CUMA 10, YA YANG KELIATAN CUMA 10 DOANG */
 const WORDS = [
   {no:1, row:0, col:0, dir:'A', ans:'NABI', clue:'Utusan Tuhan'},
   {no:2, row:0, col:0, dir:'D', ans:'NILA', clue:'Warna biru tua'},
@@ -125,9 +140,9 @@ function init() {
     for(let i=0; i<w.ans.length; i++) {
       const r = w.dir==='A'? w.row : w.row + i;
       const c = w.dir==='A'? w.col + i : w.col;
-      if(r>=SIZE || c>=SIZE) continue; // Biar gak error keluar grid
+      if(r>=SIZE || c>=SIZE) continue;
       if(!grid[r][c]) grid[r][c] = {letter: w.ans[i], nums: []};
-      if(i===0) grid[r][c].nums.push(w.no); // Nomor cuma di kotak awal
+      if(i===0) grid[r][c].nums.push(w.no);
     }
   });
 
@@ -139,15 +154,10 @@ function init() {
         const input = document.createElement('input');
         input.maxLength = 1;
         input.dataset.r = r; input.dataset.c = c;
-        input.addEventListener('input', e => {
-          e.target.value = e.target.value.toUpperCase();
-          const nextCell = boardEl.children[r*SIZE + c + (w.dir==='A'?1:SIZE)];
-          nextCell?.querySelector('input')?.focus();
-        });
         cell.appendChild(input);
         inputs[`${r}-${c}`] = input;
 
-        if(grid[r][c].nums.length) { // Cuma muncul kalau ada nomor
+        if(grid[r][c].nums.length) {
           const num = document.createElement('span');
           num.className = 'num';
           num.textContent = grid[r][c].nums[0];
@@ -191,7 +201,7 @@ function cekJawaban() {
     sfxMenang.play(); clearInterval(timerInt);
     alert(`MENANG! Waktu: ${formatTime(timer)} Skor: ${score}`);
   } else {
-    sfxBenar.play();
+    if(kataBenar > 0) sfxBenar.play();
     if(lives <= 0) { alert('Game Over! Skor: '+score); resetGame(); }
   }
   updateHUD();
