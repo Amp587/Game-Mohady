@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>TTS 15 SOAL PISAH BANGET</title>
+<title>TTS 15 SOAL PISAH</title>
 <style>
   body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
@@ -30,53 +30,78 @@
 
 <script>
 const SIZE = 15;
-// BUKTI: NO 2 DI c:8. JAUH BANGET DARI NO 1 DI c:0
+// FIX: NILA digeser ke r:1 biar nomor 2 pisah dari nomor 1
 const WORDS = [
   {no:1, r:0, c:0, d:'A', a:'NABI', k:'Utusan Tuhan'},
-  {no:2, r:0, c:8, d:'D', a:'NAIK', k:'Ke atas'}, // JAUH KE KAN
+  {no:2, r:1, c:0, d:'D', a:'NILA', k:'Warna biru tua'}, // Digeser ke bawah 1
   {no:3, r:2, c:0, d:'A', a:'SAWAH', k:'Tempat nanam padi'},
-  {no:4, r:0, c:4, d:'D', a:'IKAN', k:'Hewan air'},
-  {no:5, r:4, c:0, d:'A', a:'PINTAR', k:'Cerdas'},
-  {no:6, r:2, c:5, d:'D', a:'TULIS', k:'Pakai pulpen'},
-  {no:7, r:4, c:2, d:'D', a:'TANAH', k:'Tempat tumbuh'},
-  {no:8, r:6, c:0, d:'A', a:'KERTA', k:'Kertas zaman dulu'},
-  {no:9, r:6, c:4, d:'D', a:'ALAM', k:'Lingkungan'},
-  {no:10, r:2, c:8, d:'A', a:'RUPIAH', k:'Mata uang'}, // Nyambung ke NAIK
+  {no:4, r:0, c:5, d:'D', a:'JAKARTA', k:'Ibukota Indonesia'},
+  {no:5, r:4, c:0, d:'A', a:'PULPEN', k:'Benda untuk menulis'},
+  {no:6, r:2, c:6, d:'D', a:'PANDAI', k:'Rajin pangkal'},
+  {no:7, r:4, c:2, d:'D', a:'HITAM', k:'Warna gelap'},
+  {no:8, r:6, c:0, d:'A', a:'KAYA', k:'Hemat pangkal'},
+  {no:9, r:6, c:5, d:'D', a:'NASI', k:'Makanan pokok'},
+  {no:10, r:4, c:7, d:'D', a:'RUPIAH', k:'Mata uang Indonesia'},
   {no:11, r:8, c:0, d:'A', a:'BERSIH', k:'Bagian dari iman'},
-  {no:12, r:4, c:10, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'},
-  {no:13, r:8, c:3, d:'D', a:'SURAT', k:'Tulisan resmi'},
+  {no:12, r:6, c:9, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'},
+  {no:13, r:8, c:3, d:'D', a:'HURUF', k:'Kumpulan Abjad'},
   {no:14, r:10, c:0, d:'A', a:'PANCASILA', k:'Dasar Negara'},
-  {no:15, r:10, c:9, d:'D', a:'HAJI', k:'Rukun Islam ke 5'}
+  {no:15, r:10, c:10, d:'D', a:'HAJI', k:'Rukun Islam ke 5'}
 ];
 
 const gridEl = document.getElementById('grid');
 const acrossEl = document.getElementById('across');
 const downEl = document.getElementById('down');
 
-// Kode ini PASTI cuma nulis 1 nomor per kotak
+// Gak perlu kumpul nomor lagi karena udah dipisah
 const nomorDiKotak = {};
-WORDS.forEach(w => { nomorDiKotak[w.r + '-' + w.c] = w.no; });
+WORDS.forEach(w => {
+  let key = w.r + '-' + w.c;
+  nomorDiKotak[key] = w.no; // Langsung 1 nomor aja
+});
 
-for(let i=0; i<SIZE*SIZE; i++){ gridEl.innerHTML += '<div class="cell"></div>'; }
+// Bikin grid hitam
+for(let i=0; i<SIZE*SIZE; i++){
+  gridEl.innerHTML += '<div class="cell"></div>';
+}
 
+// Isi kata + nomor
 WORDS.forEach(w => {
   let targetOl = w.d === 'A'? acrossEl : downEl;
   targetOl.innerHTML += `<li><b>${w.no}.</b> ${w.k} (${w.a.length})</li>`;
+
   for(let i=0; i<w.a.length; i++){
     let r = w.d === 'A'? w.r : w.r + i;
     let c = w.d === 'A'? w.c + i : w.c;
     let cell = gridEl.children[r * SIZE + c];
     cell.style.background = '#fff';
-    if(i === 0){ cell.innerHTML = `<span>${nomorDiKotak[r+'-'+c]}</span><input id="c${r}-${c}" maxlength="1">`; } 
-    else { cell.innerHTML = `<input id="c${r}-${c}" maxlength="1">`; }
+    if(i === 0){
+      let key = r + '-' + c;
+      cell.innerHTML = `<span>${nomorDiKotak[key]}</span><input id="c${r}-${c}" maxlength="1">`; // Cuma 1 nomor
+    } else {
+      cell.innerHTML = `<input id="c${r}-${c}" maxlength="1">`;
+    }
   }
 });
 
 function playSound(id){ let s=document.getElementById(id); s.currentTime=0; s.volume=1; s.play(); }
+
 function cekJawaban(){
   let benar=0, total=0, salah=false;
-  WORDS.forEach(w=>{ for(let i=0; i<w.a.length; i++){ let r=w.d==='A'?w.r:w.r+i; let c=w.d==='A'?w.c+i:w.c; let inp=document.getElementById(`c${r}-${c}`); if(inp){ total++; if(inp.value.toUpperCase()===w.a[i]){benar++;inp.style.background='#b6f7b6';}else{inp.style.background='#f7b6b6';salah=true;} } });
-  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar}/${total}`); } else { playSound('suaraBenar'); alert(`YEAY SEMPURNA: ${benar}/${total}`); }
+  WORDS.forEach(w=>{
+    for(let i=0; i<w.a.length; i++){
+      let r = w.d === 'A'? w.r : w.r + i;
+      let c = w.d === 'A'? w.c + i : w.c;
+      let inp = document.getElementById(`c${r}-${c}`);
+      if(inp){
+        total++;
+        if(inp.value.toUpperCase() === w.a[i]){ benar++; inp.style.background='#b6f7b6'; } 
+        else { inp.style.background='#f7b6b6'; salah=true; }
+      }
+    }
+  });
+  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar}/${total}`); }
+  else { playSound('suaraBenar'); alert(`YEAY SEMPURNA: ${benar}/${total}`); }
 }
 function resetGame(){ location.reload(); }
 </script>
