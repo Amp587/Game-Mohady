@@ -1,4 +1,4 @@
-html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -7,9 +7,9 @@ html<!DOCTYPE html>
 <style>
   body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; margin:0; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
- .cell { width:30px; height:30px; border:1px solid #000; background:#000; position:relative; } /* Kotak hitam */
- .cell input { width:100%; height:100%; border:none; text-align:center; font-weight:bold; text-transform:uppercase; background:#fff; font-size:16px; }
- .cell span { position:absolute; top:0; left:2px; font-size:10px; font-weight:bold; color:#000; }
+.cell { width:30px; height:30px; border:1px solid #000; background:#000; position:relative; }
+.cell input { width:100%; height:100%; border:none; text-align:center; font-weight:bold; text-transform:uppercase; background:#fff; font-size:16px; }
+.cell span { position:absolute; top:0; left:1px; font-size:8px; font-weight:bold; color:#000; background:rgba(255,255,255,0.9); padding:0 2px; border-radius:3px; line-height:1.2; } /* Bisa muat 1,2,3 */
   button { padding:10px 20px; margin:5px; border:none; border-radius:8px; background:#28a745; color:#fff; font-weight:bold; cursor:pointer; font-size:15px; }
   #clues { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:800px; margin:10px auto; }
   #clues > div { background:#fff; padding:15px; border-radius:8px; text-align:left; flex:1; min-width:280px; }
@@ -27,8 +27,9 @@ html<!DOCTYPE html>
   <div><h3>Petunjuk Menurun ↓</h3><ol id="down"></ol></div>
 </div>
 
-<audio id="suaraBenar" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
-<audio id="suaraSalah" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<!-- SUARA DIBIKIN RAME BANGET -->
+<audio id="suaraBenar" src="https://actions.google.com/sounds/v1/human_voices/tada.ogg"></audio>
+<audio id="suaraSalah" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 
 <script>
 const SIZE = 15;
@@ -54,14 +55,22 @@ const gridEl = document.getElementById('grid');
 const acrossEl = document.getElementById('across');
 const downEl = document.getElementById('down');
 
-// 1. Bikin grid 15x15 hitam semua dulu
+// FIX 1: Kumpulin semua nomor di tiap kotak biar gak ketimpa
+const nomorDiKotak = {};
+WORDS.forEach(w => {
+  let key = w.r + '-' + w.c;
+  if(!nomorDiKotak[key]) nomorDiKotak[key] = [];
+  nomorDiKotak[key].push(w.no);
+});
+
+// 1. Bikin grid 15x15 hitam semua
 for(let i=0; i<SIZE*SIZE; i++){
   let div = document.createElement('div');
   div.className = 'cell';
   gridEl.appendChild(div);
 }
 
-// 2. Lubangin grid sesuai WORDS. Pakai r=0 c=0 biar gak kepanjangan 2 kotak
+// 2. Isi petunjuk + lubangin grid
 WORDS.forEach(w => {
   let targetOl = w.d === 'A'? acrossEl : downEl;
   targetOl.innerHTML += `<li><b>${w.no}.</b> ${w.k} (${w.a.length} huruf)</li>`;
@@ -71,16 +80,23 @@ WORDS.forEach(w => {
     let c = w.d === 'A'? w.c + i : w.c;
     let idx = r * SIZE + c;
     let cell = gridEl.children[idx];
-    cell.style.background = '#fff'; // Bikin putih
+    cell.style.background = '#fff';
     if(i === 0){
-      cell.innerHTML = `<span>${w.no}</span><input id="c${r}-${c}" maxlength="1">`;
+      let key = r + '-' + c;
+      cell.innerHTML = `<span>${nomorDiKotak[key].join(',')}</span><input id="c${r}-${c}" maxlength="1">`; // Muncul 1,2
     } else {
       cell.innerHTML = `<input id="c${r}-${c}" maxlength="1">`;
     }
   }
 });
 
-function playSound(id){ let s=document.getElementById(id); s.currentTime=0; s.play(); }
+// FIX 2: Suara dikeraskan + reset biar gak telat
+function playSound(id){ 
+  let s=document.getElementById(id); 
+  s.currentTime=0; 
+  s.volume=1.0; // Paling keras
+  s.play().catch(e=>{}); // Biar gak error di HP
+}
 
 function cekJawaban(){
   let benar=0, total=0, salah=false;
@@ -99,8 +115,8 @@ function cekJawaban(){
       }
     }
   });
-  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar} / ${total} \nMasih ada yang salah merah`); }
-  else { playSound('suaraBenar'); alert(`MANTAP! Skor Sempurna: ${benar} / ${total}`); }
+  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar} / ${total} \nAyo coba lagi!`); }
+  else { playSound('suaraBenar'); alert(`YEAYYY PERFECT! Skor: ${benar} / ${total}`); }
 }
 function resetGame(){ location.reload(); }
 </script>
