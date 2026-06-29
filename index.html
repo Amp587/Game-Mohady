@@ -9,8 +9,9 @@ html<!DOCTYPE html>
     --box-size: 18px;
     --gap: 1px;
     --bg: #111;
-    --box: #444; /* Abu-abu normal */
-    --box-start: #666; /* Abu-abu lebih terang buat kotak ada nomor */
+    --box: #444;
+    --box-start: #666;
+    --box-locked: #2a5; /* Hijau buat kotak yang udah bener */
     --border: #fff;
     --text: #fff;
     --accent: #00ff88;
@@ -30,9 +31,9 @@ html<!DOCTYPE html>
   #score { color: #ffd700; font-weight:bold; }
   button { background: var(--accent); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-  #board-wrapper { 
+  #board-wrapper {
     width: 100%;
-    overflow-x: auto; 
+    overflow-x: auto;
     display: flex;
     justify-content: center;
   }
@@ -41,9 +42,9 @@ html<!DOCTYPE html>
     display: grid;
     grid-template-columns: repeat(50, var(--box-size));
     grid-template-rows: repeat(50, var(--box-size));
-    gap: var(--gap); 
-    background: var(--border); 
-    padding: var(--gap); 
+    gap: var(--gap);
+    background: var(--border);
+    padding: var(--gap);
     margin: 10px 0;
     width: fit-content;
   }
@@ -53,7 +54,9 @@ html<!DOCTYPE html>
     border: 1px solid var(--border);
   }
 .cell.black { background: #000; }
-.cell.start { background: var(--box-start); } /* INI KUNCINYA BOS */
+.cell.start { background: var(--box-start); }
+.cell.locked { background: var(--box-locked)!important; } /* Dikunci */
+.cell.locked input { pointer-events: none; } /* Gak bisa diketik lagi */
 .cell input {
     width: 100%; height: 100%; border: none; background: transparent;
     color: var(--text); text-align: center; text-transform: uppercase;
@@ -62,9 +65,9 @@ html<!DOCTYPE html>
 .cell input:focus { outline: 2px solid var(--accent); }
 .cell.num {
     position: absolute; top: 0; left: 1px;
-    font-size: 6px; line-height: 1; color: #ffff00; /* Kuning biar makin nendang */
+    font-size: 6px; line-height: 1; color: #ffff00;
     pointer-events: none; z-index: 2; font-weight: bold;
-    text-shadow: 0 0 2px #000; /* Biar kebaca di background terang */
+    text-shadow: 0 0 2px #000;
   }
 
   main { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 10px; max-width: 1000px; }
@@ -127,6 +130,7 @@ let grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
 let inputs = {};
 let timer = 0, timerInt = null;
 let score = 0, lives = MAX_LIVES;
+let kataYangSudahBenar = new Set();
 
 const sfxBenar = document.getElementById('sfxBenar');
 const sfxSalah = document.getElementById('sfxSalah');
@@ -135,7 +139,7 @@ const sfxMenang = document.getElementById('sfxMenang');
 function init() {
   boardEl.innerHTML = ''; acrossEl.innerHTML = ''; downEl.innerHTML = '';
   grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
-  inputs = {}; score = 0; lives = MAX_LIVES; timer = 0;
+  inputs = {}; score = 0; lives = MAX_LIVES; timer = 0; kataYangSudahBenar.clear();
   updateHUD(); clearInterval(timerInt);
   timerInt = setInterval(() => { timer++; updateHUD(); }, 1000);
 
@@ -154,15 +158,12 @@ function init() {
       const cell = document.createElement('div');
       cell.className = 'cell';
       if(grid[r][c]) {
-        if(grid[r][c].nums.length) {
-          cell.classList.add('start'); // Kasih warna terang kalau ada nomor
-        }
+        if(grid[r][c].nums.length) cell.classList.add('start');
         const input = document.createElement('input');
         input.maxLength = 1;
         input.dataset.r = r; input.dataset.c = c;
         cell.appendChild(input);
         inputs[`${r}-${c}`] = input;
-
         if(grid[r][c].nums.length) {
           const num = document.createElement('span');
           num.className = 'num';
@@ -189,33 +190,68 @@ function init() {
 }
 
 function cekJawaban() {
-  let kataBenar = 0;
+  let adaYangSalah = false;
+  let kataBaruBenar = 0;
+
   WORDS.forEach(w => {
     let ok = true;
+    let coords = []; // Simpen koordinat kata ini
     for(let i=0; i<w.ans.length; i++) {
       const r = w.dir==='A'? w.row : w.row + i;
       const c = w.dir==='A'? w.col + i : w.col;
+      coords.push(`${r}-${c}`);
       const val = inputs[`${r}-${c}`]?.value.toUpperCase();
       if(val!== w.ans[i]) ok = false;
     }
-    if(ok) kataBenar++;
-    else { lives--; sfxSalah.play(); }
+
+    if(ok &&!kataYangSudahBenar.has(w.no)) { // Kata bener baru
+      kataYangSudahBenar.add(w.no);
+      kataBaruBenar++;
+      // KUNCI KOTAKNYA BIAR GAK BISA DIHAPUS
+      coords.forEach(key => {
+        inputs[key].parentElement.classList.add('locked');
+      });
+    }
+    if(!ok) { // Kalau salah, HAPUS SEMUA HURUFNYA
+      coords.forEach(key => {
+        if(!kataYangSudahBenar.has(w.no)) { // Jangan hapus kalau udah dikunci
+          inputs[key].value = '';
+        }
+      });
+      adaYangSalah = true;
+    }
   });
 
-  score = kataBenar * POINTS_PER_WORD;
-  if(kataBenar === WORDS.length) {
+  if(kataBaruBenar > 0) {
+    score += kataBaruBenar * POINTS_PER_WORD;
+    sfxBenar.play();
+  }
+
+  if(adaYangSalah) {
+    lives--;
+    sfxSalah.play();
+  }
+
+  updateHUD();
+
+  if(kataYangSudahBenar.size === WORDS.length) {
     sfxMenang.play(); clearInterval(timerInt);
     alert(`MENANG! Waktu: ${formatTime(timer)} Skor: ${score}`);
-  } else {
-    if(kataBenar > 0) sfxBenar.play();
-    if(lives <= 0) { alert('Game Over! Skor: '+score); resetGame(); }
+    return;
   }
-  updateHUD();
+
+  if(lives <= 0) {
+    alert('Game Over! Skor akhir: '+score);
+    resetGame();
+  }
 }
 
 function resetGame() {
   clearInterval(timerInt);
-  Object.values(inputs).forEach(i=> i.value='');
+  Object.values(inputs).forEach(i=> {
+    i.value='';
+    i.parentElement.classList.remove('locked'); // Buka kunci semua
+  });
   init();
 }
 
