@@ -6,68 +6,53 @@ html<!DOCTYPE html>
 <title>TTS GAME 50x50</title>
 <style>
   :root {
-    --box-size: 22px;
+    --box-size: 20px;
     --bg: #111;
-    --box: #444;
+    --box: #444; /* Abu-abu sesuai minta */
     --border: #fff;
-    --text: #fff;
+    --text: #fff; /* Teks putih */
     --accent: #00ff88;
-    --error: #ff4444;
   }
-    * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center;
   }
   header {
     width: 100%; max-width: 1000px; padding: 10px;
-    display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    display: flex; justify-content: space-between; align-items: center;
     background: #1a1a1a; border-bottom: 2px solid var(--border);
   }
-  header > div { display: flex; gap: 15px; align-items: center; font-weight: bold; }
-  #timer { color: var(--accent); }
-  #score { color: #ffd700; }
-  button {
-    background: var(--accent); color: #000; border: none; padding: 8px 14px;
-    border-radius: 6px; font-weight: bold; cursor: pointer;
-  }
-  button:hover { filter: brightness(1.1); }
+  #timer { color: var(--accent); font-weight:bold; }
+  #score { color: #ffd700; font-weight:bold; }
+  button { background: var(--accent); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
   #board {
     display: grid;
     grid-template-columns: repeat(50, var(--box-size));
-    gap: 1px;
-    background: var(--border);
-    padding: 1px;
-    margin: 10px 0;
-    overflow: auto;
-    max-width: 100vw;
+    gap: 1px; background: var(--border); padding: 1px; margin: 10px 0;
+    overflow: auto; max-width: 100vw;
   }
- .cell {
+.cell {
     width: var(--box-size); height: var(--box-size);
-    background: var(--box); position: relative;
+    background: var(--box); position: relative; /* WAJIB relative biar nomor bisa di atas */
     border: 1px solid var(--border);
   }
- .cell.black { background: #000; }
- .cell input {
-    width: 100%; height: 100%; border: none; background: transparent;
+.cell.black { background: #000; } /* Kotak mati */
+.cell input {
+    width: 100%; height: 100%; border: none; background: transparent; /* Biar nomor keliatan */
     color: var(--text); text-align: center; text-transform: uppercase;
-    font-size: 14px; font-weight: bold; padding: 0;
+    font-size: 12px; font-weight: bold; padding: 0; position: relative; z-index: 1;
   }
- .cell input:focus { outline: 2px solid var(--accent); }
- .cell.num {
-    position: absolute; top: 1px; left: 2px;
-    font-size: 8px; line-height: 1; color: var(--text);
-    pointer-events: none;
+.cell input:focus { outline: 2px solid var(--accent); }
+.cell.num { /* INI KUNCINYA BOS */
+    position: absolute; top: 0; left: 1px;
+    font-size: 7px; line-height: 1; color: var(--text);
+    pointer-events: none; z-index: 2; font-weight: bold;
   }
- .cell.wrong input { background: var(--error); }
 
   main { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 10px; }
- .clues { max-width: 400px; }
- .clues h3 { margin: 5px 0; border-bottom: 1px solid var(--border); }
- .clues ol { padding-left: 20px; margin: 5px 0; }
- .clues li { margin: 4px 0; cursor: pointer; }
- .clues li.active { color: var(--accent); font-weight: bold; }
+.clues { max-width: 400px; font-size: 14px;}
+.clues h3 { margin: 5px 0; border-bottom: 1px solid var(--border); }
 </style>
 </head>
 <body>
@@ -101,27 +86,18 @@ html<!DOCTYPE html>
 <audio id="sfxMenang" src="https://cdn.freesound.org/previews/456/456588_9498993-lq.mp3"></audio>
 
 <script>
-/* ========== 1. DAFTAR SOAL ==========
-   Tambah sendiri sampe 50. Format: {no, row, col, dir, ans, clue}
-   dir: 'A' = Mendatar, 'D' = Menurun
-*/
+/* ISI SOAL DULU BOS. KALO CUMA 10, YA YANG KELIATAN CUMA 10 DOANG */
 const WORDS = [
-  {no:1, row:1, col:1, dir:'A', ans:'NABI', clue:'Utusan Tuhan'},
-  {no:2, row:1, col:1, dir:'D', ans:'NILA', clue:'Warna biru tua'},
-  {no:3, row:3, col:1, dir:'A', ans:'SAWAH', clue:'Tempat nanam padi'},
-  {no:4, row:1, col:5, dir:'D', clue:'Ibukota Indonesia', ans:'JAKARTA'},
-  {no:5, row:5, col:3, dir:'A', clue:'Benda untuk menulis', ans:'PULPEN'},
-  {no:6, row:1, col:9, dir:'D', clue:'Hewan berkaki 4', ans:'KUDA'},
-  {no:7, row:7, col:1, dir:'A', clue:'Alat musik', ans:'GITAR'},
-  {no:8, row:3, col:7, dir:'D', clue:'Negara tetangga', ans:'MALAYSIA'},
-  {no:9, row:9, col:5, dir:'A', clue:'Matahari', ans:'SURYA'},
-  {no:10, row:5, col:1, dir:'D', clue:'Air laut', ans:'ASIN'},
+  {no:1, row:0, col:0, dir:'A', ans:'NABI', clue:'Utusan Tuhan'},
+  {no:2, row:0, col:0, dir:'D', ans:'NILA', clue:'Warna biru tua'},
+  {no:3, row:2, col:0, dir:'A', ans:'SAWAH', clue:'Tempat nanam padi'},
+  {no:4, row:0, col:4, dir:'D', clue:'Ibukota Indonesia', ans:'JAKARTA'},
+  {no:5, row:4, col:2, dir:'A', clue:'Benda untuk menulis', ans:'PULPEN'},
 ];
 const SIZE = 50;
 const MAX_LIVES = 3;
 const POINTS_PER_WORD = 10;
 
-/* ========== 2. SISTEM GAME ========== */
 const boardEl = document.getElementById('board');
 const acrossEl = document.getElementById('across');
 const downEl = document.getElementById('down');
@@ -133,34 +109,28 @@ let grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
 let inputs = {};
 let timer = 0, timerInt = null;
 let score = 0, lives = MAX_LIVES;
-let activeWord = null;
 
 const sfxBenar = document.getElementById('sfxBenar');
 const sfxSalah = document.getElementById('sfxSalah');
 const sfxMenang = document.getElementById('sfxMenang');
 
 function init() {
-  boardEl.innerHTML = '';
-  acrossEl.innerHTML = '';
-  downEl.innerHTML = '';
+  boardEl.innerHTML = ''; acrossEl.innerHTML = ''; downEl.innerHTML = '';
   grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
-  inputs = {};
-  score = 0; lives = MAX_LIVES; timer = 0;
-  updateHUD();
-  clearInterval(timerInt);
+  inputs = {}; score = 0; lives = MAX_LIVES; timer = 0;
+  updateHUD(); clearInterval(timerInt);
   timerInt = setInterval(() => { timer++; updateHUD(); }, 1000);
 
-  // 1. Taruh semua kata ke grid
   WORDS.forEach(w => {
     for(let i=0; i<w.ans.length; i++) {
       const r = w.dir==='A'? w.row : w.row + i;
       const c = w.dir==='A'? w.col + i : w.col;
+      if(r>=SIZE || c>=SIZE) continue; // Biar gak error keluar grid
       if(!grid[r][c]) grid[r][c] = {letter: w.ans[i], nums: []};
-      grid[r][c].nums.push(w.no);
+      if(i===0) grid[r][c].nums.push(w.no); // Nomor cuma di kotak awal
     }
   });
 
-  // 2. Gambar papan 50x50
   for(let r=0; r<SIZE; r++) {
     for(let c=0; c<SIZE; c++) {
       const cell = document.createElement('div');
@@ -171,18 +141,16 @@ function init() {
         input.dataset.r = r; input.dataset.c = c;
         input.addEventListener('input', e => {
           e.target.value = e.target.value.toUpperCase();
-          const next = e.target.parentElement.nextElementSibling?.querySelector('input');
-          if(next) next.focus();
+          const nextCell = boardEl.children[r*SIZE + c + (w.dir==='A'?1:SIZE)];
+          nextCell?.querySelector('input')?.focus();
         });
         cell.appendChild(input);
-        const key = `${r}-${c}`;
-        inputs[key] = input;
+        inputs[`${r}-${c}`] = input;
 
-        // Nomor kecil
-        if(grid[r][c].nums.length) {
+        if(grid[r][c].nums.length) { // Cuma muncul kalau ada nomor
           const num = document.createElement('span');
           num.className = 'num';
-          num.textContent = Math.min(...grid[r][c].nums);
+          num.textContent = grid[r][c].nums[0];
           cell.appendChild(num);
         }
       } else {
@@ -192,65 +160,46 @@ function init() {
     }
   }
 
-  // 3. Gambar daftar soal
   WORDS.filter(w=>w.dir==='A').sort((a,b)=>a.no-b.no).forEach(w=>{
     const li = document.createElement('li');
     li.textContent = `${w.no}. ${w.clue} (${w.ans.length})`;
-    li.onclick = () => highlightWord(w);
     acrossEl.appendChild(li);
   });
   WORDS.filter(w=>w.dir==='D').sort((a,b)=>a.no-b.no).forEach(w=>{
     const li = document.createElement('li');
     li.textContent = `${w.no}. ${w.clue} (${w.ans.length})`;
-    li.onclick = () => highlightWord(w);
     downEl.appendChild(li);
   });
 }
 
-function highlightWord(w) {
-  document.querySelectorAll('.clues li').forEach(li=>li.classList.remove('active'));
-  const list = w.dir==='A'? acrossEl : downEl;
-  [...list.children].find(li=>li.textContent.startsWith(w.no+'.')).classList.add('active');
-  const key = `${w.row}-${w.col}`;
-  inputs[key]?.focus();
-  activeWord = w;
-}
-
 function cekJawaban() {
-  let benarSemua = true;
   let kataBenar = 0;
-
   WORDS.forEach(w => {
     let ok = true;
     for(let i=0; i<w.ans.length; i++) {
       const r = w.dir==='A'? w.row : w.row + i;
       const c = w.dir==='A'? w.col + i : w.col;
-      const val = inputs[`${r}-${c}`].value.toUpperCase();
+      const val = inputs[`${r}-${c}`]?.value.toUpperCase();
       if(val!== w.ans[i]) ok = false;
     }
     if(ok) kataBenar++;
-    else benarSemua = false;
+    else { lives--; sfxSalah.play(); }
   });
 
-  if(kataBenar > score/POINTS_PER_WORD) {
-    score = kataBenar * POINTS_PER_WORD;
-    sfxBenar.currentTime=0; sfxBenar.play();
+  score = kataBenar * POINTS_PER_WORD;
+  if(kataBenar === WORDS.length) {
+    sfxMenang.play(); clearInterval(timerInt);
+    alert(`MENANG! Waktu: ${formatTime(timer)} Skor: ${score}`);
   } else {
-    lives--; sfxSalah.currentTime=0; sfxSalah.play();
-    if(lives <= 0) { alert('Game Over! Skor akhir: '+score); resetGame(); return; }
+    sfxBenar.play();
+    if(lives <= 0) { alert('Game Over! Skor: '+score); resetGame(); }
   }
   updateHUD();
-
-  if(benarSemua) {
-    sfxMenang.currentTime=0; sfxMenang.play();
-    clearInterval(timerInt);
-    alert(`SELAMAT! Kamu menang!\nWaktu: ${formatTime(timer)}\nSkor: ${score}`);
-  }
 }
 
 function resetGame() {
   clearInterval(timerInt);
-  Object.values(inputs).forEach(i=>{ i.value=''; i.parentElement.classList.remove('wrong'); });
+  Object.values(inputs).forEach(i=> i.value='');
   init();
 }
 
