@@ -11,7 +11,7 @@ html<!DOCTYPE html>
     --bg: #111;
     --box: #444;
     --box-start: #666;
-    --box-locked: #2a5; /* Hijau buat kotak yang udah bener */
+    --box-locked: #2a5;
     --border: #fff;
     --text: #fff;
     --accent: #00ff88;
@@ -29,6 +29,7 @@ html<!DOCTYPE html>
   }
   #timer { color: var(--accent); font-weight:bold; }
   #score { color: #ffd700; font-weight:bold; }
+  #lives { color: #ff5555; font-weight:bold; }
   button { background: var(--accent); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
   #board-wrapper {
@@ -55,8 +56,8 @@ html<!DOCTYPE html>
   }
 .cell.black { background: #000; }
 .cell.start { background: var(--box-start); }
-.cell.locked { background: var(--box-locked)!important; } /* Dikunci */
-.cell.locked input { pointer-events: none; } /* Gak bisa diketik lagi */
+.cell.locked { background: var(--box-locked)!important; }
+.cell.locked input { pointer-events: none; }
 .cell input {
     width: 100%; height: 100%; border: none; background: transparent;
     color: var(--text); text-align: center; text-transform: uppercase;
@@ -78,8 +79,8 @@ html<!DOCTYPE html>
 <body>
 <header>
   <div>
-    <span id="timer">Waktu: 00:00</span>
-    <span id="score">Skor: 0</span>
+    <span id="timer">Waktu: 00:00</span> | 
+    <span id="score">Skor: 0</span> | 
     <span id="lives">❤️ x3</span>
   </div>
   <div>
@@ -190,53 +191,59 @@ function init() {
 }
 
 function cekJawaban() {
+  let adaYangDiisi = false;
   let adaYangSalah = false;
   let kataBaruBenar = 0;
 
   WORDS.forEach(w => {
     let ok = true;
-    let coords = []; // Simpen koordinat kata ini
+    let kosong = true;
+    let coords = [];
     for(let i=0; i<w.ans.length; i++) {
       const r = w.dir==='A'? w.row : w.row + i;
       const c = w.dir==='A'? w.col + i : w.col;
-      coords.push(`${r}-${c}`);
-      const val = inputs[`${r}-${c}`]?.value.toUpperCase();
+      const key = `${r}-${c}`;
+      coords.push(key);
+      const val = inputs[key]?.value.toUpperCase();
+      if(val) kosong = false; // Ada yang diisi
       if(val!== w.ans[i]) ok = false;
     }
 
-    if(ok &&!kataYangSudahBenar.has(w.no)) { // Kata bener baru
+    if(!kosong) adaYangDiisi = true; // Tandain ada kotak yg diisi
+
+    if(ok &&!kataYangSudahBenar.has(w.no)) {
       kataYangSudahBenar.add(w.no);
       kataBaruBenar++;
-      // KUNCI KOTAKNYA BIAR GAK BISA DIHAPUS
       coords.forEach(key => {
         inputs[key].parentElement.classList.add('locked');
       });
     }
-    if(!ok) { // Kalau salah, HAPUS SEMUA HURUFNYA
+    if(!ok &&!kosong) { // Salah TAPI ada isinya
       coords.forEach(key => {
-        if(!kataYangSudahBenar.has(w.no)) { // Jangan hapus kalau udah dikunci
-          inputs[key].value = '';
-        }
+        inputs[key].value = '';
       });
       adaYangSalah = true;
     }
   });
 
+  // 1. Skor pasti di-update
   if(kataBaruBenar > 0) {
     score += kataBaruBenar * POINTS_PER_WORD;
     sfxBenar.play();
-  }
-
-  if(adaYangSalah) {
+    alert(`Mantap! +${kataBaruBenar * POINTS_PER_WORD} Poin. Total Skor: ${score}`);
+  } else if(adaYangSalah) {
     lives--;
     sfxSalah.play();
+    alert(`Jawaban Salah! -1 Nyawa. Skor: ${score}`); // INI BIAR KELIATAN
+  } else if(!adaYangDiisi) {
+    alert(`Isi dulu bos, baru dicek 😅`);
   }
 
-  updateHUD();
+  updateHUD(); // WAJIB PANGGIL TERUS BIAR ANGKA GANTI
 
   if(kataYangSudahBenar.size === WORDS.length) {
     sfxMenang.play(); clearInterval(timerInt);
-    alert(`MENANG! Waktu: ${formatTime(timer)} Skor: ${score}`);
+    alert(`MENANG! Waktu: ${formatTime(timer)} Skor Akhir: ${score}`);
     return;
   }
 
@@ -250,14 +257,14 @@ function resetGame() {
   clearInterval(timerInt);
   Object.values(inputs).forEach(i=> {
     i.value='';
-    i.parentElement.classList.remove('locked'); // Buka kunci semua
+    i.parentElement.classList.remove('locked');
   });
   init();
 }
 
 function updateHUD() {
   timerEl.textContent = `Waktu: ${formatTime(timer)}`;
-  scoreEl.textContent = `Skor: ${score}`;
+  scoreEl.textContent = `Skor: ${score}`; // INI YANG BIKIN ANGKA GANTI
   livesEl.textContent = `❤️ x${lives}`;
 }
 const formatTime = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
