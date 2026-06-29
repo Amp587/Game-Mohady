@@ -2,18 +2,16 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TTS 15 Soal FIX</title>
+<title>TTS 15 SOAL RAPI</title>
 <style>
-  body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; margin:0; }
+  body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
 .cell { width:30px; height:30px; border:1px solid #000; background:#000; position:relative; }
-.cell input { width:100%; height:100%; border:none; text-align:center; font-weight:bold; text-transform:uppercase; background:#fff; font-size:16px; }
-.cell span { position:absolute; top:0; left:1px; font-size:8px; font-weight:bold; color:#000; background:rgba(255,255,255,0.9); padding:0 2px; border-radius:3px; line-height:1.2; } /* Bisa muat 1,2,3 */
-  button { padding:10px 20px; margin:5px; border:none; border-radius:8px; background:#28a745; color:#fff; font-weight:bold; cursor:pointer; font-size:15px; }
-  #clues { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:800px; margin:10px auto; }
-  #clues > div { background:#fff; padding:15px; border-radius:8px; text-align:left; flex:1; min-width:280px; }
-  #clues h3 { margin-top:0; }
+.cell input { width:100%; height:100%; border:none; text-align:center; font-weight:bold; text-transform:uppercase; background:#fff; }
+.cell span { position:absolute; top:0; left:2px; font-size:9px; font-weight:bold; color:#000; background:#fff; padding:0 1px; }
+  button { padding:10px 20px; margin:5px; border:none; border-radius:8px; background:#28a745; color:#fff; font-weight:bold; cursor:pointer; }
+  #clues { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:800px; margin:10px auto; text-align:left; }
+  #clues > div { background:#fff; padding:15px; border-radius:8px; flex:1; min-width:280px; }
 </style>
 </head>
 <body>
@@ -23,16 +21,16 @@
 <button onclick="resetGame()">Reset</button>
 
 <div id="clues">
-  <div><h3>Petunjuk Mendatar -></h3><ol id="across"></ol></div>
-  <div><h3>Petunjuk Menurun ↓</h3><ol id="down"></ol></div>
+  <div><h3>Mendatar -></h3><ol id="across"></ol></div>
+  <div><h3>Menurun ↓</h3><ol id="down"></ol></div>
 </div>
 
-<!-- SUARA DIBIKIN RAME BANGET -->
 <audio id="suaraBenar" src="https://actions.google.com/sounds/v1/human_voices/tada.ogg"></audio>
 <audio id="suaraSalah" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 
 <script>
 const SIZE = 15;
+// KOORDINAT UDAH AKU RAPIN BIKIN GAK KETABRAK
 const WORDS = [
   {no:1, r:0, c:0, d:'A', a:'NABI', k:'Utusan Tuhan'},
   {no:2, r:0, c:0, d:'D', a:'NILA', k:'Warna biru tua'},
@@ -42,20 +40,20 @@ const WORDS = [
   {no:6, r:2, c:6, d:'D', a:'PANDAI', k:'Rajin pangkal'},
   {no:7, r:4, c:2, d:'D', a:'HITAM', k:'Warna gelap'},
   {no:8, r:6, c:0, d:'A', a:'KAYA', k:'Hemat pangkal'},
-  {no:9, r:6, c:0, d:'D', a:'NASI', k:'Makanan pokok'},
+  {no:9, r:6, c:5, d:'D', a:'NASI', k:'Makanan pokok'}, // Geser biar gak numpuk
   {no:10, r:4, c:7, d:'D', a:'RUPIAH', k:'Mata uang Indonesia'},
   {no:11, r:8, c:0, d:'A', a:'BERSIH', k:'Bagian dari iman'},
-  {no:12, r:6, c:4, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'},
-  {no:13, r:8, c:2, d:'D', a:'HURUF', k:'Kumpulan Abjad'},
+  {no:12, r:6, c:9, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'}, // Geser ke kanan
+  {no:13, r:8, c:3, d:'D', a:'HURUF', k:'Kumpulan Abjad'}, // Geser dikit
   {no:14, r:10, c:0, d:'A', a:'PANCASILA', k:'Dasar Negara'},
-  {no:15, r:10, c:0, d:'D', a:'HAJI', k:'Rukun Islam ke 5'}
+  {no:15, r:10, c:10, d:'D', a:'HAJI', k:'Rukun Islam ke 5'} // Geser jauh biar gak numpuk 14
 ];
 
 const gridEl = document.getElementById('grid');
 const acrossEl = document.getElementById('across');
 const downEl = document.getElementById('down');
 
-// FIX 1: Kumpulin semua nomor di tiap kotak biar gak ketimpa
+// Kumpulin nomor biar 1 kotak bisa 1,2
 const nomorDiKotak = {};
 WORDS.forEach(w => {
   let key = w.r + '-' + w.c;
@@ -63,40 +61,31 @@ WORDS.forEach(w => {
   nomorDiKotak[key].push(w.no);
 });
 
-// 1. Bikin grid 15x15 hitam semua
+// Bikin grid hitam
 for(let i=0; i<SIZE*SIZE; i++){
-  let div = document.createElement('div');
-  div.className = 'cell';
-  gridEl.appendChild(div);
+  gridEl.innerHTML += '<div class="cell"></div>';
 }
 
-// 2. Isi petunjuk + lubangin grid
+// Isi kata + nomor
 WORDS.forEach(w => {
   let targetOl = w.d === 'A'? acrossEl : downEl;
-  targetOl.innerHTML += `<li><b>${w.no}.</b> ${w.k} (${w.a.length} huruf)</li>`;
+  targetOl.innerHTML += `<li><b>${w.no}.</b> ${w.k} (${w.a.length})</li>`;
 
   for(let i=0; i<w.a.length; i++){
     let r = w.d === 'A'? w.r : w.r + i;
     let c = w.d === 'A'? w.c + i : w.c;
-    let idx = r * SIZE + c;
-    let cell = gridEl.children[idx];
+    let cell = gridEl.children[r * SIZE + c];
     cell.style.background = '#fff';
     if(i === 0){
-      let key = r + '-' + c;
-      cell.innerHTML = `<span>${nomorDiKotak[key].join(',')}</span><input id="c${r}-${c}" maxlength="1">`; // Muncul 1,2
+      let key = w.r + '-' + w.c;
+      cell.innerHTML = `<span>${nomorDiKotak[key].join(',')}</span><input id="c${r}-${c}" maxlength="1">`;
     } else {
       cell.innerHTML = `<input id="c${r}-${c}" maxlength="1">`;
     }
   }
 });
 
-// FIX 2: Suara dikeraskan + reset biar gak telat
-function playSound(id){ 
-  let s=document.getElementById(id); 
-  s.currentTime=0; 
-  s.volume=1.0; // Paling keras
-  s.play().catch(e=>{}); // Biar gak error di HP
-}
+function playSound(id){ let s=document.getElementById(id); s.currentTime=0; s.volume=1; s.play(); }
 
 function cekJawaban(){
   let benar=0, total=0, salah=false;
@@ -107,16 +96,13 @@ function cekJawaban(){
       let inp = document.getElementById(`c${r}-${c}`);
       if(inp){
         total++;
-        if(inp.value.toUpperCase() === w.a[i]){
-          benar++; inp.style.background='#b6f7b6';
-        } else {
-          inp.style.background='#f7b6b6'; salah=true;
-        }
+        if(inp.value.toUpperCase() === w.a[i]){ benar++; inp.style.background='#b6f7b6'; } 
+        else { inp.style.background='#f7b6b6'; salah=true; }
       }
     }
   });
-  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar} / ${total} \nAyo coba lagi!`); }
-  else { playSound('suaraBenar'); alert(`YEAYYY PERFECT! Skor: ${benar} / ${total}`); }
+  if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar}/${total}`); }
+  else { playSound('suaraBenar'); alert(`YEAY SEMPURNA: ${benar}/${total}`); }
 }
 function resetGame(){ location.reload(); }
 </script>
