@@ -2,290 +2,79 @@ html<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TTS GAME 50x50</title>
 <style>
-  :root {
-    --box-size: 18px;
-    --gap: 1px;
-    --bg: #111;
-    --box: #444;
-    --box-start: #666;
-    --box-locked: #2a5;
-    --border: #fff;
-    --text: #fff;
-    --accent: #00ff88;
-  }
-    * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center;
-    overflow-x: hidden;
-  }
-  header {
-    width: 100%; max-width: calc(50 * var(--box-size) + 51 * var(--gap));
-    padding: 10px; display: flex; justify-content: space-between; align-items: center;
-    background: #1a1a1a; border-bottom: 2px solid var(--border);
-  }
-  #timer { color: var(--accent); font-weight:bold; }
-  #score { color: #ffd700; font-weight:bold; }
-  #lives { color: #ff5555; font-weight:bold; }
-  button { background: var(--accent); color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-
-  #board-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    display: flex;
-    justify-content: center;
-  }
-
-  #board {
-    display: grid;
-    grid-template-columns: repeat(50, var(--box-size));
-    grid-template-rows: repeat(50, var(--box-size));
-    gap: var(--gap);
-    background: var(--border);
-    padding: var(--gap);
-    margin: 10px 0;
-    width: fit-content;
-  }
-.cell {
-    width: var(--box-size); height: var(--box-size);
-    background: var(--box); position: relative;
-    border: 1px solid var(--border);
-  }
-.cell.black { background: #000; }
-.cell.start { background: var(--box-start); }
-.cell.locked { background: var(--box-locked)!important; }
-.cell.locked input { pointer-events: none; }
-.cell input {
-    width: 100%; height: 100%; border: none; background: transparent;
-    color: var(--text); text-align: center; text-transform: uppercase;
-    font-size: 11px; font-weight: bold; padding: 0; position: relative; z-index: 1;
-  }
-.cell input:focus { outline: 2px solid var(--accent); }
-.cell.num {
-    position: absolute; top: 0; left: 1px;
-    font-size: 6px; line-height: 1; color: #ffff00;
-    pointer-events: none; z-index: 2; font-weight: bold;
-    text-shadow: 0 0 2px #000;
-  }
-
-  main { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 10px; max-width: 1000px; }
-.clues { max-width: 400px; font-size: 14px;}
-.clues h3 { margin: 5px 0; border-bottom: 1px solid var(--border); }
+body{font-family:sans-serif;background:#f4f4f4;margin:0;padding:10px;text-align:center}
+#grid{display:grid;grid-template-columns:repeat(20,25px);gap:2px;justify-content:center;margin:10px auto}
+.cell{width:25px;height:25px;border:1px solid #000;background:#fff;text-align:center;text-transform:uppercase;font-weight:bold;position:relative}
+.cell.black{background:#000}
+.cell span{position:absolute;top:1px;left:2px;font-size:9px}
+button{margin:5px;padding:10px 20px;border:none;border-radius:8px;background:#28a745;color:#fff;font-weight:bold;cursor:pointer}
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <span id="timer">Waktu: 00:00</span> | 
-    <span id="score">Skor: 0</span> | 
-    <span id="lives">❤️ x3</span>
-  </div>
-  <div>
-    <button id="cekBtn">Cek Jawaban</button>
-    <button id="ulangBtn">Ulang Game</button>
-  </div>
-</header>
-
-<div id="board-wrapper">
-  <div id="board"></div>
-</div>
-
-<main>
-  <div class="clues">
-    <h3>Mendatar →</h3>
-    <ol id="across"></ol>
-  </div>
-  <div class="clues">
-    <h3>Menurun ↓</h3>
-    <ol id="down"></ol>
-  </div>
-</main>
-
-<audio id="sfxBenar" src="https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"></audio>
-<audio id="sfxSalah" src="https://cdn.freesound.org/previews/270/270402_5123851-lq.mp3"></audio>
-<audio id="sfxMenang" src="https://cdn.freesound.org/previews/456/456588_9498993-lq.mp3"></audio>
-
+<h2>TTS GAME 50x50</h2>
+<div id="grid"></div>
+<button onclick="cekJawaban()">Cek Jawaban</button>
+<button onclick="location.reload()">Ulang Game</button>
+<div id="clues"></div>
 <script>
-jsconst WORDS = [
+const WORDS = [
   {no:1, row:0, col:0, dir:'A', ans:'NABI', clue:'Utusan Tuhan'},
   {no:2, row:0, col:0, dir:'D', ans:'NILA', clue:'Warna biru tua'},
   {no:3, row:2, col:0, dir:'A', ans:'SAWAH', clue:'Tempat nanam padi'},
   {no:4, row:0, col:4, dir:'D', ans:'JAKARTA', clue:'Ibukota Indonesia'},
   {no:5, row:4, col:2, dir:'A', ans:'PULPEN', clue:'Benda untuk menulis'},
-  // 6-10 SOAL DIBETULIN DIR NYA
   {no:6, row:6, col:0, dir:'D', ans:'PANDAI', clue:'Rajin pangkal'},
   {no:7, row:8, col:2, dir:'A', ans:'HITAM', clue:'Warna gelap'},
   {no:8, row:6, col:5, dir:'D', ans:'KAYA', clue:'Hemat pangkal'},
   {no:9, row:10, col:0, dir:'A', ans:'NASI', clue:'Makanan pokok'},
   {no:10, row:8, col:7, dir:'D', ans:'RUPIAH', clue:'Mata uang Indonesia'},
-
-  // 11-15 SOAL DIBETULIN DIR NYA
   {no:11, row:12, col:0, dir:'A', ans:'BERSIH', clue:'Bagian dari iman'},
   {no:12, row:10, col:4, dir:'D', ans:'MEMBACA', clue:'Literasi'},
   {no:13, row:14, col:0, dir:'A', ans:'HURUF', clue:'Abjad'},
   {no:14, row:12, col:6, dir:'D', ans:'PANCASILA', clue:'Dasar Negara'},
   {no:15, row:16, col:0, dir:'A', ans:'HAJI', clue:'Rukun Islam ke lima'}
 ];
-const SIZE = 50;
-const MAX_LIVES = 3;
-const POINTS_PER_WORD = 10;
 
-const boardEl = document.getElementById('board');
-const acrossEl = document.getElementById('across');
-const downEl = document.getElementById('down');
-const timerEl = document.getElementById('timer');
-const scoreEl = document.getElementById('score');
-const livesEl = document.getElementById('lives');
+const grid = document.getElementById('grid');
+const cluesDiv = document.getElementById('clues');
+let cells = {};
 
-let grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
-let inputs = {};
-let timer = 0, timerInt = null;
-let score = 0, lives = MAX_LIVES;
-let kataYangSudahBenar = new Set();
-
-const sfxBenar = document.getElementById('sfxBenar');
-const sfxSalah = document.getElementById('sfxSalah');
-const sfxMenang = document.getElementById('sfxMenang');
-
-function init() {
-  boardEl.innerHTML = ''; acrossEl.innerHTML = ''; downEl.innerHTML = '';
-  grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
-  inputs = {}; score = 0; lives = MAX_LIVES; timer = 0; kataYangSudahBenar.clear();
-  updateHUD(); clearInterval(timerInt);
-  timerInt = setInterval(() => { timer++; updateHUD(); }, 1000);
-
-  WORDS.forEach(w => {
-    for(let i=0; i<w.ans.length; i++) {
-      const r = w.dir==='A'? w.row : w.row + i;
-      const c = w.dir==='A'? w.col + i : w.col;
-      if(r>=SIZE || c>=SIZE) continue;
-      if(!grid[r][c]) grid[r][c] = {letter: w.ans[i], nums: []};
-      if(i===0) grid[r][c].nums.push(w.no);
+WORDS.forEach(w=>{
+  let clueEl = document.createElement('p');
+  clueEl.textContent = w.no + '. ' + w.clue + ' (' + w.dir + ' + w.ans.length + ')';
+  cluesDiv.appendChild(clueEl);
+  for(let i=0;i<w.ans.length;i++){
+    let r = w.dir==='A'? w.row : w.row+i;
+    let c = w.dir==='A'? w.col+i : w.col;
+    let key = r+'-'+c;
+    if(!cells[key]){
+      let div = document.createElement('div');
+      div.className='cell';
+      div.innerHTML = `<span>${i===0?w.no:''}</span><input maxlength="1" id="cell-${key}">`;
+      grid.appendChild(div);
+      cells[key]=div;
     }
-  });
+  }
+});
 
-  for(let r=0; r<SIZE; r++) {
-    for(let c=0; c<SIZE; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      if(grid[r][c]) {
-        if(grid[r][c].nums.length) cell.classList.add('start');
-        const input = document.createElement('input');
-        input.maxLength = 1;
-        input.dataset.r = r; input.dataset.c = c;
-        cell.appendChild(input);
-        inputs[`${r}-${c}`] = input;
-        if(grid[r][c].nums.length) {
-          const num = document.createElement('span');
-          num.className = 'num';
-          num.textContent = grid[r][c].nums[0];
-          cell.appendChild(num);
-        }
-      } else {
-        cell.classList.add('black');
+function cekJawaban(){
+  let benar=0, total=0;
+  WORDS.forEach(w=>{
+    for(let i=0;i<w.ans.length;i++){
+      let r = w.dir==='A'? w.row : w.row+i;
+      let c = w.dir==='A'? w.col+i : w.col;
+      let inp = document.getElementById(`cell-${r}-${c}`);
+      if(inp){
+        total++;
+        if(inp.value.toUpperCase()===w.ans[i]){benar++; inp.style.background='#c8e6c9'}
+        else{inp.style.background='#ffcdd2'}
       }
-      boardEl.appendChild(cell);
-    }
-  }
-
-  WORDS.filter(w=>w.dir==='A').sort((a,b)=>a.no-b.no).forEach(w=>{
-    const li = document.createElement('li');
-    li.textContent = `${w.no}. ${w.clue} (${w.ans.length})`;
-    acrossEl.appendChild(li);
-  });
-  WORDS.filter(w=>w.dir==='D').sort((a,b)=>a.no-b.no).forEach(w=>{
-    const li = document.createElement('li');
-    li.textContent = `${w.no}. ${w.clue} (${w.ans.length})`;
-    downEl.appendChild(li);
-  });
-}
-
-function cekJawaban() {
-  let adaYangDiisi = false;
-  let adaYangSalah = false;
-  let kataBaruBenar = 0;
-
-  WORDS.forEach(w => {
-    let ok = true;
-    let kosong = true;
-    let coords = [];
-    for(let i=0; i<w.ans.length; i++) {
-      const r = w.dir==='A'? w.row : w.row + i;
-      const c = w.dir==='A'? w.col + i : w.col;
-      const key = `${r}-${c}`;
-      coords.push(key);
-      const val = inputs[key]?.value.toUpperCase();
-      if(val) kosong = false; // Ada yang diisi
-      if(val!== w.ans[i]) ok = false;
-    }
-
-    if(!kosong) adaYangDiisi = true; // Tandain ada kotak yg diisi
-
-    if(ok &&!kataYangSudahBenar.has(w.no)) {
-      kataYangSudahBenar.add(w.no);
-      kataBaruBenar++;
-      coords.forEach(key => {
-        inputs[key].parentElement.classList.add('locked');
-      });
-    }
-    if(!ok &&!kosong) { // Salah TAPI ada isinya
-      coords.forEach(key => {
-        inputs[key].value = '';
-      });
-      adaYangSalah = true;
     }
   });
-
-  // 1. Skor pasti di-update
-  if(kataBaruBenar > 0) {
-    score += kataBaruBenar * POINTS_PER_WORD;
-    sfxBenar.play();
-    alert(`Mantap! +${kataBaruBenar * POINTS_PER_WORD} Poin. Total Skor: ${score}`);
-  } else if(adaYangSalah) {
-    lives--;
-    sfxSalah.play();
-    alert(`Jawaban Salah! -1 Nyawa. Skor: ${score}`); // INI BIAR KELIATAN
-  } else if(!adaYangDiisi) {
-    alert(`Isi dulu bos, baru dicek 😅`);
-  }
-
-  updateHUD(); // WAJIB PANGGIL TERUS BIAR ANGKA GANTI
-
-  if(kataYangSudahBenar.size === WORDS.length) {
-    sfxMenang.play(); clearInterval(timerInt);
-    alert(`MENANG! Waktu: ${formatTime(timer)} Skor Akhir: ${score}`);
-    return;
-  }
-
-  if(lives <= 0) {
-    alert('Game Over! Skor akhir: '+score);
-    resetGame();
-  }
+  alert(`Benar: ${benar} dari ${total}`);
 }
-
-function resetGame() {
-  clearInterval(timerInt);
-  Object.values(inputs).forEach(i=> {
-    i.value='';
-    i.parentElement.classList.remove('locked');
-  });
-  init();
-}
-
-function updateHUD() {
-  timerEl.textContent = `Waktu: ${formatTime(timer)}`;
-  scoreEl.textContent = `Skor: ${score}`; // INI YANG BIKIN ANGKA GANTI
-  livesEl.textContent = `❤️ x${lives}`;
-}
-const formatTime = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
-
-document.getElementById('cekBtn').onclick = cekJawaban;
-document.getElementById('ulangBtn').onclick = resetGame;
-
-init();
 </script>
 </body>
 </html>
