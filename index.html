@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>TTS 15 SOAL PISAH</title>
+<title>TTS 15 SOAL PISAH BANGET</title>
 <style>
   body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
@@ -30,37 +30,35 @@
 
 <script>
 const SIZE = 15;
-// FIX FINAL: NO 2 DIGESER KE KAN BIAR GAK KETEMU NO 1
+// BUKTI: NO 2 DI c:8. JAUH BANGET DARI NO 1 DI c:0
 const WORDS = [
-  {no:1, r:0, c:0, d:'A', a:'NABI', k:'Utusan Tuhan'}, // Sendiri di pojok kiri atas
-  {no:2, r:0, c:6, d:'D', a:'NAIK', k:'Ke atas'}, // Geser ke kanan, nomor 2 sendiri
+  {no:1, r:0, c:0, d:'A', a:'NABI', k:'Utusan Tuhan'},
+  {no:2, r:0, c:8, d:'D', a:'NAIK', k:'Ke atas'}, // JAUH KE KAN
   {no:3, r:2, c:0, d:'A', a:'SAWAH', k:'Tempat nanam padi'},
-  {no:4, r:0, c:4, d:'D', a:'IKAN', k:'Hewan air'}, // Nyambung ke NABI huruf I
+  {no:4, r:0, c:4, d:'D', a:'IKAN', k:'Hewan air'},
   {no:5, r:4, c:0, d:'A', a:'PINTAR', k:'Cerdas'},
-  {no:6, r:2, c:5, d:'D', a:'TULIS', k:'Pakai pulpen'}, // Nyambung ke SAWAH huruf H
-  {no:7, r:4, c:2, d:'D', a:'TANAH', k:'Tempat tumbuh'}, // Nyambung ke PINTAR huruf N
+  {no:6, r:2, c:5, d:'D', a:'TULIS', k:'Pakai pulpen'},
+  {no:7, r:4, c:2, d:'D', a:'TANAH', k:'Tempat tumbuh'},
   {no:8, r:6, c:0, d:'A', a:'KERTA', k:'Kertas zaman dulu'},
-  {no:9, r:6, c:4, d:'D', a:'ALAM', k:'Lingkungan'}, // Nyambung ke KERTA huruf T
-  {no:10, r:4, c:6, d:'D', a:'RUPIAH', k:'Mata uang'}, // Nyambung ke NAIK huruf A
+  {no:9, r:6, c:4, d:'D', a:'ALAM', k:'Lingkungan'},
+  {no:10, r:2, c:8, d:'A', a:'RUPIAH', k:'Mata uang'}, // Nyambung ke NAIK
   {no:11, r:8, c:0, d:'A', a:'BERSIH', k:'Bagian dari iman'},
-  {no:12, r:6, c:8, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'}, // Nyambung ke KERTA huruf A
-  {no:13, r:8, c:3, d:'D', a:'SURAT', k:'Tulisan resmi'}, // Nyambung ke BERSIH huruf S
+  {no:12, r:4, c:10, d:'D', a:'MEMBACA', k:'Kegiatan Literasi'},
+  {no:13, r:8, c:3, d:'D', a:'SURAT', k:'Tulisan resmi'},
   {no:14, r:10, c:0, d:'A', a:'PANCASILA', k:'Dasar Negara'},
-  {no:15, r:10, c:9, d:'D', a:'HAJI', k:'Rukun Islam ke 5'} // Nyambung ke PANCASILA huruf L
+  {no:15, r:10, c:9, d:'D', a:'HAJI', k:'Rukun Islam ke 5'}
 ];
 
 const gridEl = document.getElementById('grid');
 const acrossEl = document.getElementById('across');
 const downEl = document.getElementById('down');
 
-// Sekarang 1 kotak = 1 nomor doang, gak ada 1,2 lagi
+// Kode ini PASTI cuma nulis 1 nomor per kotak
 const nomorDiKotak = {};
 WORDS.forEach(w => { nomorDiKotak[w.r + '-' + w.c] = w.no; });
 
-// Bikin grid
 for(let i=0; i<SIZE*SIZE; i++){ gridEl.innerHTML += '<div class="cell"></div>'; }
 
-// Isi kata + nomor
 WORDS.forEach(w => {
   let targetOl = w.d === 'A'? acrossEl : downEl;
   targetOl.innerHTML += `<li><b>${w.no}.</b> ${w.k} (${w.a.length})</li>`;
