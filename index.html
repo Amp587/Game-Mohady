@@ -30,7 +30,7 @@
   background: red; 
   animation: blink 0.5s infinite; 
 }
-@keyframes blink { 50% { opacity: 0; }
+@keyframes blink { 50% { opacity: 0.5s; }
 </style>
 </head>
 <body>
@@ -132,13 +132,12 @@ let interval = setInterval(() => {
   let s = waktu % 60;
   timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   
-  if (waktu <= 10 && waktu >=0) {timerE1.classlist.add('habis'); 
-  else {timerE1.classlist.remover('habis')}
+  if (waktu <= 10 ) timerE1.classlist.add('habis'); 
   
   if (waktu <= 0) {
     clearInterval(interval);
     alert('WAKTU HABIS!');
-    document.querySelectorAll('input, button').forEach(i => i.disabled = true);return;
+    document.querySelectorAll('input, button').forEach(i => i.disabled = true);
   }
 }, 1000);
 
