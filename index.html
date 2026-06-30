@@ -132,7 +132,21 @@ let interval = setInterval(() => {
   let s = waktu % 60;
   timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   
-  if (waktu <= 10) timerEl.classList.add('habis');
+  jika (waktu <= 10) {
+  timerEl.Daftar kelas.menambahkan('habis');
+
+  jika (waktu === 10 && !beepInterval) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const beep = audioCtx.createOscillator();
+    beep.type = 'square';
+    beep.frequency.setValueAtTime(1000, audioCtx.currentTime);
+    beep.connect(audioCtx.destination);
+    beep.start();
+    beepInterval = aturInterval(() => {
+      beep.frequency.setValueAtTime(1000, audioCtx.currentTime);
+    }, 1000); 
+  }
+}
 
   if (waktu <= 0) {
     clearInterval(interval);
