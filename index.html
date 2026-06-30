@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>TTS 15 SOAL Mohady</title>
-<style>
+<style> 
   body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
 .cell { width:30px; height:30px; border:1px solid #000; background:#000; position:relative; }
@@ -12,10 +12,30 @@
   button { padding:10px 20px; margin:5px; border:none; border-radius:8px; background:#28a745; color:#fff; font-weight:bold; cursor:pointer; }
   #clues { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:800px; margin:10px auto; text-align:left; }
   #clues > div { background:#fff; padding:15px; border-radius:8px; flex:1; min-width:280px; }
+  #timer {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d32f2f; 
+  text-align: center;
+  margin: 10px auto 15px auto;
+  padding: 10px;
+  background: #ffebee;
+  border: 2px solid #d32f2f;
+  border-radius: 8px;
+  max-width: 200px;
+  font-family: monospace;
+}
+#timer.habis { 
+  color: white; 
+  background: red; 
+  animation: kedip 1s infinite; 
+}
+@keyframes kedip { 50% { opacity: 0.5; }
 </style>
 </head>
 <body>
 <h2>TTS Mohady 15 SOAL</h2>
+  <div id="timer">Waktu: 05:00</div> 
 <div id="grid"></div>
 <button onclick="cekJawaban()">Cek Jawaban</button>
 <button onclick="resetGame()">Reset</button>
@@ -103,6 +123,26 @@ function cekJawaban(){
   if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar}/${total}`); }
   else { playSound('suaraBenar'); alert(`YEAY SEMPURNA: ${benar}/${total}`); }
 }
+// ===== TIMER MULAI =====
+const timerEl = document.getElementById('timer');
+let waktu = 5 * 60; // 5 menit
+let interval = setInterval(() => {
+  waktu--;
+  let m = Math.floor(waktu / 60);
+  let s = waktu % 60;
+  timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  
+  if (waktu <= 10) timerEl.classList.add('habis');
+
+  if (waktu <= 0) {
+    clearInterval(interval);
+    alert('WAKTU HABIS!');
+    document.querySelectorAll('input, button').forEach(i => i.disabled = true);
+  }
+}, 1000);
+
+document.querySelector('button[onclick="cekJawaban()"]').addEventListener('click', () => clearInterval(interval));
+// ===== TIMER SELESAI =====  
 function resetGame(){ location.reload(); }
 </script>
 </body>
