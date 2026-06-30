@@ -138,8 +138,8 @@ let interval = setInterval(() => {
   if (waktu <= 0) {
     clearInterval(interval);
     alert('WAKTU HABIS!');
-    document.querySelectorAll('input, button').forEach(i => i.disabled = true);
-  retoren;}
+    document.querySelectorAll('input, button').forEach(i => i.disabled = true);return;
+  }
 }, 1000);
 
 document.querySelector('button[onclick="cekJawaban()"]').addEventListener('click', () => clearInterval(interval));
