@@ -30,14 +30,7 @@
   background: red; 
   animation: blink 0.5s infinite; 
 }
-@keyframes blink { 50% { opacity: 0.5s; }
- #tulisanHabis {  <!-- COPY-PASTE KODE INI DI SINI -->
-   font-size: 48px;
-   font-weight: bold;
-   color: red;
-   text-align: center;
-   margin-top: 20px;
- }                 
+@keyframes blink { 50% { opacity: 0.5s; }           
 </style>
 </head>
 <body>
@@ -151,7 +144,7 @@ function startTimer() {
     if (waktu <= 0) {
       clearInterval(interval);
       playSound('suaraSalah'); 
-      document.getElementById('tulisanHabis').textContent = 'WAKTU HABIS!';
+      alert('WAKTU HABIS');
       document.querySelectorAll('input').forEach(i => i.disabled = true);
     }
   }, 1000);
@@ -174,7 +167,6 @@ function resetGame(){
 startTimer(); // Jalan pertama kali pas web dibuka
 // ===== TIMER SELESAI =====
 
-</script>
- <div id="tulisanHabis"></div>  
+</script>  
 </body>
 </html>
