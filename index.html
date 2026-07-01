@@ -143,6 +143,7 @@ function startTimer() {
     if (waktu <= 10) timerEl.classList.add('habis');
     if (waktu <= 0) {
       clearInterval(interval);
+      playSound('suaraSalah'); 
       alert('WAKTU HABIS!');
       document.querySelectorAll('input').forEach(i => i.disabled = true);
     }
