@@ -152,7 +152,13 @@ function startTimer() {
 function resetGame(){
   clearInterval(interval); // Stop timer lama biar gak dobel
   waktu = 300; // Balikin ke 5 menit
-  document.querySelectorAll('.kotak, input, textarea, [contenteditable]').forEach(i => { i.disabled = false; i.value = ''; i.textContent = ''; i.classList.remove('benar', 'salah', 'habis'); });
+  document.querySelectorAll('.kotak, input, textarea, [contenteditable]').forEach(i => {
+  i.disabled = false;
+  i.value = '';
+  i.textContent = '';
+  i.style.backgroundColor = ''; // <- PAKSA PUTIHIN MANUAL
+  i.classList.remove('benar', 'salah', 'habis', 'active'); // <- HAPUS SEMUA CLASS WARNA
+});
   timerEl.classList.remove('habis'); 
   startTimer(); // Jalan lagi dari 05:00
 }
