@@ -125,8 +125,8 @@ function cekJawaban(){
 }
 // ===== TIMER MULAI =====
 const timerEl = document.getElementById('timer');
-let waktu = 60; // 1 menit 
-let interval = null; 
+let waktu = 60; 
+let jalan = false; 
 
 function updateTimer() {
   let m = Math.floor(waktu / 60);
@@ -135,14 +135,16 @@ function updateTimer() {
 }
 
 function startTimer() {
-  clearInterval(interval); 
-  updateTimer(); // Pastiin muncul 01:00 dulu
-  interval = setInterval(() => {
-    waktu--;
+  if(jalan) return; // Biar gak dobel
+  jalan = true;
+  updateTimer(); // WAJIB: Tampil 01:00 dulu
+  let interval = setInterval(() => {
+    waktu = waktu - 1; // Cuma ada 1x di sini
     updateTimer();
-    if (waktu <= 10 ) timerEl.classList.add('habis');
-    if (waktu === 0) {
+    if (waktu <= 10) timerEl.classList.add('habis');
+    if (waktu <= 0) {
       clearInterval(interval);
+      jalan = false;
       alert('WAKTU HABIS!');
       document.querySelectorAll('input').forEach(i => i.disabled = true);
     }
@@ -151,11 +153,12 @@ function startTimer() {
 
 function resetGame(){
   waktu = 60; 
+  jalan = false;
   document.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; }); 
   timerEl.classList.remove('habis'); 
-  startTimer();
+  updateTimer(); // Balikin ke 01:00
 }
-startTimer(); // Jalan pertama kali
+updateTimer(); // <-- INI KUNCI: Biar pertama load langsung 01:00
 // ===== TIMER SELESAI =====
 </script>
 </body>
