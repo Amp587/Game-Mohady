@@ -34,7 +34,7 @@
 </style>
 </head>
 <body>
-<h2>TTS Mohady 15 SOAL</h2>
+<h2>TTS Mohady </h2>
   <div id="timer">Waktu: 05:00</div> 
 <div id="grid"></div>
 <button onclick="cekJawaban()">Cek Jawaban</button>
@@ -132,15 +132,15 @@ let interval = setInterval(() => {
   let s = waktu % 60;
   timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   
-  if (waktu <= 10 ) timerE1.classlist.add('habis'); 
+  if (waktu <= 10 ) timerEl.classList.add('habis'); 
   
-  if (waktu <= 0) {
+  if (waktu === 0) {
     clearInterval(interval);
     alert('WAKTU HABIS!');
-    document.querySelectorAll('input, button').forEach(i => i.disabled = true);
+    document.querySelectorAll('input, button').forEach(i => i.disabled = true);return;
   }
 }, 1000);
-
+waktu--;
 document.querySelector('button[onclick="cekJawaban()"]').addEventListener('click', () => clearInterval(interval));
 // ===== TIMER SELESAI =====  
 function resetGame(){ location.reload(); }
