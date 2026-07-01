@@ -37,7 +37,7 @@
 <h2>TTS Mohady </h2>
   <div id="timer">Waktu: 05:00</div> 
 <div id="grid"></div>
-<button onclick="cekJawaban()">Cek Jawaban</button>
+<button onclick="checkScore()">Check Score</button>
 <button onclick="resetGame()">Reset</button>
 
 <div id="clues">
@@ -106,7 +106,7 @@ WORDS.forEach(w => {
 
 function playSound(id){ let s=document.getElementById(id); s.currentTime=0; s.volume=1; s.play(); }
 
-function cekJawaban(){
+function checkScore(){
   let benar=0, total=0, salah=false;
   WORDS.forEach(w=>{
     for(let i=0; i<w.a.length; i++){
