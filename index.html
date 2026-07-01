@@ -123,41 +123,43 @@ function cekJawaban(){
   if(salah){ playSound('suaraSalah'); alert(`Skor: ${benar}/${total}`); }
   else { playSound('suaraBenar'); alert(`YEAY SEMPURNA: ${benar}/${total}`); }
 }
-// ===== TIMER MULAI =====
+// ===== TIMER 5 MENIT + RESET FIX =====
 const timerEl = document.getElementById('timer');
-console.log('Timer El:', timerEl); // HARUSNYA MUNCUL <div id="timer">
-
-let waktu = 60; 
+let waktu = 300; // 5 menit = 300 detik
+let interval = null; 
 
 function updateTimer() {
-  if(!timerEl) return; // Biar gak error
   let m = Math.floor(waktu / 60);
   let s = waktu % 60;
   timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
 function startTimer() {
-  updateTimer(); 
-  let interval = setInterval(() => {
+  clearInterval(interval); 
+  updateTimer(); // Pastiin muncul 05:00 dulu, diem 1 detik
+  interval = setInterval(() => {
     waktu--;
     updateTimer();
+    if (waktu <= 10) timerEl.classList.add('habis');
     if (waktu <= 0) {
       clearInterval(interval);
       alert('WAKTU HABIS!');
+      document.querySelectorAll('input').forEach(i => i.disabled = true);
     }
   }, 1000);
 }
 
 function resetGame(){
-  waktu = 60; 
-  updateTimer();
-  startTimer();
+  clearInterval(interval); // Stop timer lama biar gak dobel
+  waktu = 300; // Balikin ke 5 menit
+  document.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; }); 
+  timerEl.classList.remove('habis'); 
+  startTimer(); // Jalan lagi dari 05:00
 }
 
-updateTimer(); // Tampil 01:00
-startTimer();  // Jalan
+startTimer(); // Jalan pertama kali pas web dibuka
 // ===== TIMER SELESAI =====
-function resetGame(){locationreload();}
+
 </script>
 </body>
 </html>
