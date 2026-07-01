@@ -152,7 +152,7 @@ function startTimer() {
 function resetGame(){
   clearInterval(interval); // Stop timer lama biar gak dobel
   waktu = 300; // Balikin ke 5 menit
-  document.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; }); 
+  document.querySelectorAll('.kotak, input, textarea, [contenteditable]').forEach(i => { i.disabled = false; i.value = ''; i.textContent = ''; i.classList.remove('benar', 'salah', 'habis'); });
   timerEl.classList.remove('habis'); 
   startTimer(); // Jalan lagi dari 05:00
 }
