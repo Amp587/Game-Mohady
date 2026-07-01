@@ -125,37 +125,38 @@ function cekJawaban(){
 }
 // ===== TIMER MULAI =====
 const timerEl = document.getElementById('timer');
-const WAKTU_AWAL = 60; // 1 menit. Mau 2 menit ganti 120
-let waktu = WAKTU_AWAL; 
+let waktu = 60; // 1 menit 
 let interval = null; 
+
+function updateTimer() {
+  let m = Math.floor(waktu / 60);
+  let s = waktu % 60;
+  timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
 
 function startTimer() {
   clearInterval(interval); 
+  updateTimer(); // Pastiin muncul 01:00 dulu
   interval = setInterval(() => {
     waktu--;
-    let m = Math.floor(waktu / 60);
-    let s = waktu % 60;
-    timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
+    updateTimer();
     if (waktu <= 10 ) timerEl.classList.add('habis');
-
     if (waktu === 0) {
       clearInterval(interval);
       alert('WAKTU HABIS!');
-      document.querySelectorAll('input').forEach(i => i.disabled = true); // Cuma kotak mati
+      document.querySelectorAll('input').forEach(i => i.disabled = true);
     }
   }, 1000);
 }
 
 function resetGame(){
-  waktu = WAKTU_AWAL; 
+  waktu = 60; 
   document.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; }); 
   timerEl.classList.remove('habis'); 
-  startTimer(); // Jalan lagi dari 60
+  startTimer();
 }
 startTimer(); // Jalan pertama kali
 // ===== TIMER SELESAI =====
-
 </script>
 </body>
 </html>
