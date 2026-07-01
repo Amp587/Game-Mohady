@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>TTS 15 SOAL Mohady</title>
+<title>TTS Mohady</title>
 <style> 
   body { font-family: Arial; background:#f2f2f2; text-align:center; padding:10px; }
   #grid { display:grid; grid-template-columns:repeat(15, 30px); gap:2px; justify-content:center; margin:15px auto; }
@@ -125,24 +125,36 @@ function cekJawaban(){
 }
 // ===== TIMER MULAI =====
 const timerEl = document.getElementById('timer');
-let waktu = 5 * 60; // 5 menit
-let interval = setInterval(() => {
-  waktu--;
-  let m = Math.floor(waktu / 60);
-  let s = waktu % 60;
-  timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  
-  if (waktu <= 10 ) timerEl.classList.add('habis'); 
-  
-  if (waktu === 0) {
-    clearInterval(interval);
-    alert('WAKTU HABIS!');
-    document.querySelectorAll('input, button').forEach(i => i.disabled = true);return;
-  }
-}, 1000);
-waktu--;
-document.querySelector('button[onclick="cekJawaban()"]').addEventListener('click', () => clearInterval(interval));
-// ===== TIMER SELESAI =====  
+const WAKTU_AWAL = 60; // 1 menit. Mau 2 menit ganti 120
+let waktu = WAKTU_AWAL; 
+let interval = null; 
+
+function startTimer() {
+  clearInterval(interval); 
+  interval = setInterval(() => {
+    waktu--;
+    let m = Math.floor(waktu / 60);
+    let s = waktu % 60;
+    timerEl.textContent = `Waktu: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+    if (waktu <= 10 ) timerEl.classList.add('habis');
+
+    if (waktu === 0) {
+      clearInterval(interval);
+      alert('WAKTU HABIS!');
+      document.querySelectorAll('input').forEach(i => i.disabled = true); // Cuma kotak mati
+    }
+  }, 1000);
+}
+
+function resetGame(){
+  waktu = WAKTU_AWAL; 
+  document.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; }); 
+  timerEl.classList.remove('habis'); 
+  startTimer(); // Jalan lagi dari 60
+}
+startTimer(); // Jalan pertama kali
+// ===== TIMER SELESAI =====
 function resetGame(){ location.reload(); }
 </script>
 </body>
