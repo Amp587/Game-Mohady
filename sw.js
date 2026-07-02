@@ -1,4 +1,4 @@
-javascriptconst CACHE = "tts-mohady-v1";
+const CACHE = "tts-mohady-v1";
 const ASSETS = [
   "./",
   "./index.html",
