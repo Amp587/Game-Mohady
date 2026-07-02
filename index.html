@@ -170,9 +170,9 @@ startTimer(); // Jalan pertama kali pas web dibuka
 
  <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {navigator.serviceWorker.register('sw.js');
-      });
- }
+        navigator.serviceWorker.register('sw.js');
+      }
+ 
  </script>          
    
 </script> 
