@@ -1,11 +1,21 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "name": "Mohady",
+  "short_name": "Mohady",
+  "start_url": "./",
   "display": "standalone",
-  "name": "TTS Mohady",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "TTS Mohady",
-  "start_url": "/",
-  "theme_color": "#ffffff"
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Aplikasi Mohady",  <-- tambahin ini biar warning kuning ilang juga
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192", 
+      "type": "image/png"
+    },
+    {
+      "src": "icon-192.png", 
+      "sizes": "512x512", 
+      "type": "image/png"
+    }
+  ]
 }
