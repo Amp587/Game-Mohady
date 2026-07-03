@@ -1,15 +1,20 @@
 {
-  "name": "Mohady",
-  "short_name": "Mohady",
-  "start_url": "./",
+  "name": "TTS Mohady",
+  "short_name": "TTS Mohady",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
-  "description": "Aplikasi Mohady",  
+  "theme_color": "#000",
+  "description": "Game Mohady",
   "icons": [
     {
       "src": "icon-192.png",
-      "sizes": "192x192", 
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
