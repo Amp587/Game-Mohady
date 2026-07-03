@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "Aplikasi Mohady",  <-- tambahin ini biar warning kuning ilang juga
+  "description": "Aplikasi Mohady",  
   "icons": [
     {
       "src": "icon-192.png",
