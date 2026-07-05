@@ -52,66 +52,27 @@
 const SIZE = 15;
 // FIX: NILA digeser ke r:1 biar nomor 2 pisah dari nomor 1
 const WORDS = [
-  // 1. ISLAM ketemu 2D di huruf I
-  {no: 1, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'}, 
-  // 2. IMAN ketemu 1A di huruf I 
-  {no: 2, r: 1, c: 1, d:'D', a:'IMAN', k:'Rukun iman yang pertama'},
-  // 3. SAJADAH ketemu 4A di huruf D
-  {no: 3, r: 1, c: 6, d:'D', a:'SAJADAH', k:'Alas untuk sholat'},
-  // 4. DOA ketemu 3D di huruf D
-  {no: 4, r: 1, c: 10, d:'A', a:'DOA', k:'Permohonan ke Allah'},
-  // 5. NABI ketemu 2D di huruf M
+  // ===== MENDATAR 1-9 =====
+  {no: 2, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'},
+  {no: 4, r: 1, c: 9, d:'A', a:'DOA', k:'Permohonan ke Allah'},
   {no: 5, r: 3, c: 1, d:'A', a:'NABI', k:'Utusan Allah'},
-  // 6. KITAB ketemu 4A di huruf I
-  {no: 6, r: 3, c: 5, d:'D', a:'KITAB', k:'Al-Quran'},
-  // 7. TAQWA ketemu 4A di huruf A
-  {no: 7, r: 3, c: 10, d:'D', a:'TAQWA', k:'Takut kepada Allah'},
-  // 8. PUASA ketemu 5A di huruf N
-  {no: 8, r: 5, c: 1, d:'A', a:'PUASA', k:'Rukun Islam ke-3'},
-  // 9. ZAKAT ketemu 6D di huruf B
-  {no: 9, r: 5, c: 6, d:'A', a:'ZAKAT', k:'Rukun Islam ke-4'},
-  // 10. HAJI ketemu 9A di huruf A
-  {no: 10, r: 5, c: 12, d:'D', a:'HAJI', k:'Rukun Islam ke-5'},
-  // 11. SABAR ketemu 8A di huruf S
+  {no: 7, r: 3, c: 10, d:'A', a:'IMAN', k:'Kepercayaan'},
+  {no: 8, r: 5, c: 1, d:'A', a:'PUASA', k:'Rukun Islam 3'},
+  {no: 9, r: 5, c: 6, d:'A', a:'ZAKAT', k:'Rukun Islam 4'},
   {no: 11, r: 7, c: 1, d:'A', a:'SABAR', k:'Tahan uji'},
-  // 12. SYUKUR ketemu 9A di huruf A
-  {no: 12, r: 7, c: 6, d:'D', a:'SYUKUR', k:'Berterima kasih'},
-  // 13. IKHLAS ketemu 10D di huruf I
-  {no: 13, r: 7, c: 12, d:'A', a:'IKHLAS', k:'Tulus hati'},
-  // 14. MASJID ketemu 11A di huruf S
-  {no: 14, r: 9, c: 1, d:'D', a:'MASJID', k:'Rumah Allah'},
-  // 15. WUDHU ketemu 12D di huruf U
-  {no: 15, r: 9, c: 7, d:'A', a:'WUDHU', k:'Bersuci sebelum sholat'},
-  // 16. IMAM ketemu 13A di huruf I
-  {no: 16, r: 9, c: 12, d:'D', a:'IMAM', k:'Pemimpin sholat'},
-  // 17. ADZAN ketemu 14D di huruf M
+  {no: 13, r: 7, c: 11, d:'A', a:'HAJI', k:'Rukun Islam 5'},
+  {no: 14, r: 9, c: 9, d:'A', a:'WUDHU', k:'Bersuci'},
   {no: 17, r: 11, c: 1, d:'A', a:'ADZAN', k:'Panggilan sholat'},
-  // 18. IQOMAH ketemu 15A di huruf H
-  {no: 18, r: 11, c: 6, d:'D', a:'IQOMAH', k:'Panggilan kedua'},
-  // 19. SHOLAT ketemu 16D di huruf M
-  {no: 19, r: 11, c: 12, d:'A', a:'SHOLAT', k:'Ibadah 5 waktu'},
-  // 20. SURGA ketemu 17A di huruf S
-  {no: 20, r: 13, c: 1, d:'D', a:'SURGA', k:'Tempat mulia'},
-  // 21. NERAKA ketemu 18D di huruf O
-  {no: 21, r: 13, c: 6, d:'A', a:'NERAKA', k:'Tempat siksa'},
-  // 22. BERKAH ketemu 19A di huruf L
-  {no: 22, r: 13, c: 12, d:'D', a:'BERKAH', k:'Keberkahan'},
-  // 23. RAHMAT ketemu 20D di huruf R
-  {no: 23, r: 15, c: 1, d:'A', a:'RAHMAT', k:'Kasih sayang Allah'},
-  // 24. NIKMAT ketemu 21A di huruf K
-  {no: 24, r: 15, c: 7, d:'D', a:'NIKMAT', k:'Karunia'},
-  // 25. HIDAYAH ketemu 22D di huruf H
-  {no: 25, r: 15, c: 12, d:'A', a:'HIDAYAH', k:'Petunjuk Allah'},
-  // 26. TOBAT ketemu 2D di huruf O
-  {no: 26, r: 2, c: 3, d:'A', a:'TOBAT', k:'Kembali ke Allah'},
-  // 27. AMAL ketemu 26A di huruf O
-  {no: 27, r: 4, c: 3, d:'D', a:'AMAL', k:'Perbuatan'},
-  // 28. PAHALA ketemu 27D di huruf M
-  {no: 28, r: 6, c: 3, d:'A', a:'PAHALA', k:'Ganjaran baik'},
-  // 29. DOSA ketemu 28A di huruf A
-  {no: 29, r: 8, c: 3, d:'D', a:'DOSA', k:'Perbuatan buruk'},
-  // 30. RIDHO ketemu 29D di huruf O
-  {no: 30, r: 10, c: 3, d:'A', a:'RIDHO', k:'Kerelaan Allah'}
+
+  // ===== MENURUN 1-8 =====
+  {no: 2, r: 1, c: 1, d:'D', a:'IMAN', k:'Rukun iman'},
+  {no: 3, r: 1, c: 5, d:'D', a:'SAJADAH', k:'Alas sholat'},
+  {no: 6, r: 1, c: 10, d:'D', a:'TAQWA', k:'Takut Allah'},
+  {no: 10, r: 1, c: 13, d:'D', a:'IKHLAS', k:'Tulus hati'},
+  {no: 12, r: 3, c: 6, d:'D', a:'SYUKUR', k:'Terima kasih'},
+  {no: 15, r: 5, c: 9, d:'D', a:'SHOLAT', k:'Ibadah 5 waktu'},
+  {no: 16, r: 7, c: 13, d:'D', a:'BERKAH', k:'Keberkahan'},
+  {no: 18, r: 9, c: 5, d:'D', a:'RAHMAT', k:'Kasih sayang'}
  ]
 
 const gridEl = document.getElementById('grid');
