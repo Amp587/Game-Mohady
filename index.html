@@ -52,28 +52,38 @@
 const SIZE = 15;
 // FIX: NILA digeser ke r:1 biar nomor 2 pisah dari nomor 1
 const WORDS = [
-  {no: 6, r: 6, c: 2, d:'A', a:'KAPUR', k:'Alat tulis di papan tulis kapur'},
-  {no: 7, r: 8, c: 2, d:'A', a:'HEMAT', k:'Irit, tidak boros'},
-  {no: 8, r: 10, c: 2, d:'A', a:'NABI', k:'Utusan Tuhan'},
-  {no: 9, r: 12, c: 2, d:'A', a:'IMAN', k:'Bagian dari iman'},
-  {no: 10, r: 14, c: 2, d:'A', a:'PUASA', k:'Rukun Islam ke-3'},
-  {no: 11, r: 16, c: 2, d:'A', a:'ZAKAT', k:'Rukun Islam ke-4'},
-  {no: 12, r: 18, c: 2, d:'A', a:'HAJI', k:'Rukun Islam ke-5'},
-  {no: 13, r: 20, c: 2, d:'A', a:'SABAR', k:'Tahan uji'},
-  {no: 14, r: 7, c: 9, d:'A', a:'DOA', k:'Permohonan ke Tuhan'},
-  {no: 15, r: 9, c: 9, d:'A', a:'KITAB', k:'Al-Quran'},
+  {no: 1, r: 2, c: 2, d:'A', a:'NABI', k:'Utusan Tuhan'},
+  {no: 2, r: 4, c: 2, d:'A', a:'IMAN', k:'Kepercayaan'},
+  {no: 3, r: 6, c: 2, d:'A', a:'KAPUR', k:'Alat tulis papan'},
+  {no: 4, r: 8, c: 2, d:'A', a:'HEMAT', k:'Tidak boros'},
+  {no: 5, r: 10, c: 2, d:'A', a:'PUASA', k:'Rukun Islam 3'},
+  {no: 6, r: 12, c: 2, d:'A', a:'ZAKAT', k:'Rukun Islam 4'},
+  {no: 7, r: 14, c: 2, d:'A', a:'HAJI', k:'Rukun Islam 5'},
+  {no: 8, r: 16, c: 2, d:'A', a:'SABAR', k:'Tahan uji'},
+  {no: 9, r: 18, c: 2, d:'A', a:'DOA', k:'Permohonan'},
+  {no: 10, r: 20, c: 2, d:'A', a:'KITAB', k:'Al-Quran'},
+  {no: 11, r: 3, c: 9, d:'A', a:'TAQWA', k:'Takut Allah'},
+  {no: 12, r: 5, c: 9, d:'A', a:'SYUKUR', k:'Berterima kasih'},
+  {no: 13, r: 7, c: 9, d:'A', a:'IKHLAS', k:'Tulus hati'},
+  {no: 14, r: 9, c: 9, d:'A', a:'WUDHU', k:'Bersuci'},
+  {no: 15, r: 11, c: 9, d:'A', a:'MASJID', k:'Rumah Allah'},
 
-  // ===== MENURUN 6-15 =====
-  {no: 6, r: 5, c: 11, d:'D', a:'HADIST', k:'Sabda Nabi'},
-  {no: 7, r: 7, c: 3, d:'D', a:'BERKAH', k:'Keberkahan'},
-  {no: 8, r: 9, c: 11, d:'D', a:'RAHMAT', k:'Kasih sayang'},
-  {no: 9, r: 11, c: 3, d:'D', a:'NIKMAT', k:'Karunia'},
-  {no: 10, r: 13, c: 11, d:'D', a:'TOBAT', k:'Kembali ke Allah'},
-  {no: 11, r: 15, c: 3, d:'D', a:'AMAL', k:'Perbuatan'},
-  {no: 12, r: 15, c: 10, d:'D', a:'PAHALA', k:'Ganjaran baik'},
-  {no: 13, r: 17, c: 3, d:'D', a:'DOSA', k:'Perbuatan buruk'},
-  {no: 14, r: 17, c: 9, d:'D', a:'RIDHO', k:'Kerelaan Allah'},
-  {no: 15, r: 19, c: 3, d:'D', a:'SURGA', k:'Tempat mulia'}
+  // ===== MENURUN 1-15 =====
+  {no: 1, r: 1, c: 3, d:'D', a:'JAKARTA', k:'Ibu kota RI'},
+  {no: 2, r: 1, c: 10, d:'D', a:'SALAH', k:'Kebalikan benar'},
+  {no: 3, r: 3, c: 4, d:'D', a:'BERKAH', k:'Keberkahan'},
+  {no: 4, r: 5, c: 4, d:'D', a:'RAHMAT', k:'Kasih sayang'},
+  {no: 5, r: 7, c: 4, d:'D', a:'NIKMAT', k:'Karunia'},
+  {no: 6, r: 5, c: 12, d:'D', a:'HADIST', k:'Sabda Nabi'},
+  {no: 7, r: 9, c: 12, d:'D', a:'TOBAT', k:'Kembali Allah'},
+  {no: 8, r: 11, c: 4, d:'D', a:'AMAL', k:'Perbuatan'},
+  {no: 9, r: 11, c: 11, d:'D', a:'PAHALA', k:'Ganjaran baik'},
+  {no: 10, r: 13, c: 4, d:'D', a:'DOSA', k:'Perbuatan buruk'},
+  {no: 11, r: 13, c: 10, d:'D', a:'RIDHO', k:'Kerelaan Allah'},
+  {no: 12, r: 15, c: 4, d:'D', a:'SURGA', k:'Tempat mulia'},
+  {no: 13, r: 17, c: 4, d:'D', a:'NERAKA', k:'Tempat siksa'},
+  {no: 14, r: 13, c: 13, d:'D', a:'SHOLAT', k:'Ibadah 5 waktu'},
+  {no: 15, r: 15, c: 13, d:'D', a:'ZIKIR', k:'Ingat Allah'}
  ]
 
 const gridEl = document.getElementById('grid');
