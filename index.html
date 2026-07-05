@@ -52,27 +52,27 @@
 const SIZE = 15;
 // FIX: NILA digeser ke r:1 biar nomor 2 pisah dari nomor 1
 const WORDS = [
-  // ===== MENDATAR 1-9 =====
-  {no: 2, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'},
-  {no: 4, r: 1, c: 9, d:'A', a:'DOA', k:'Permohonan ke Allah'},
-  {no: 5, r: 3, c: 1, d:'A', a:'NABI', k:'Utusan Allah'},
-  {no: 7, r: 3, c: 10, d:'A', a:'IMAN', k:'Kepercayaan'},
-  {no: 8, r: 5, c: 1, d:'A', a:'PUASA', k:'Rukun Islam 3'},
-  {no: 9, r: 5, c: 6, d:'A', a:'ZAKAT', k:'Rukun Islam 4'},
-  {no: 11, r: 7, c: 1, d:'A', a:'SABAR', k:'Tahan uji'},
-  {no: 13, r: 7, c: 11, d:'A', a:'HAJI', k:'Rukun Islam 5'},
-  {no: 14, r: 9, c: 9, d:'A', a:'WUDHU', k:'Bersuci'},
-  {no: 17, r: 11, c: 1, d:'A', a:'ADZAN', k:'Panggilan sholat'},
+// ===== MENDATAR =====
+  {no: 2, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'},  // 5 huruf I
+  {no: 4, r: 1, c: 6, d:'A', a:'IMAN', k:'Rukun iman'},                  // 4 huruf I
+  {no: 5, r: 3, c: 1, d:'A', a:'NABI', k:'Utusan Allah'},                // 4 huruf N
+  {no: 7, r: 3, c: 10, d:'A', a:'DOA', k:'Permohonan'},                  // 3 huruf D
+  {no: 8, r: 5, c: 1, d:'A', a:'PUASA', k:'Rukun Islam 3'},              // 5 huruf P
+  {no: 9, r: 5, c: 6, d:'A', a:'ZAKAT', k:'Rukun Islam 4'},              // 5 huruf Z
+  {no: 11, r: 7, c: 1, d:'A', a:'SABAR', k:'Tahan uji'},                 // 5 huruf S
+  {no: 13, r: 7, c: 11, d:'A', a:'HAJI', k:'Rukun Islam 5'},             // 4 huruf H
+  {no: 14, r: 9, c: 9, d:'A', a:'WUDHU', k:'Bersuci'},                   // 5 huruf W
+  {no: 17, r: 11, c: 1, d:'A', a:'ADZAN', k:'Panggilan sholat'},         // 5 huruf A
 
-  // ===== MENURUN 1-8 =====
-  {no: 2, r: 1, c: 1, d:'D', a:'IMAN', k:'Rukun iman'},
-  {no: 3, r: 1, c: 5, d:'D', a:'SAJADAH', k:'Alas sholat'},
-  {no: 6, r: 1, c: 10, d:'D', a:'TAQWA', k:'Takut Allah'},
-  {no: 10, r: 1, c: 13, d:'D', a:'IKHLAS', k:'Tulus hati'},
-  {no: 12, r: 3, c: 6, d:'D', a:'SYUKUR', k:'Terima kasih'},
-  {no: 15, r: 5, c: 9, d:'D', a:'SHOLAT', k:'Ibadah 5 waktu'},
-  {no: 16, r: 7, c: 13, d:'D', a:'BERKAH', k:'Keberkahan'},
-  {no: 18, r: 9, c: 5, d:'D', a:'RAHMAT', k:'Kasih sayang'}
+  // ===== MENURUN =====
+  {no: 2, r: 1, c: 1, d:'D', a:'ISLAM', k:'Agama Islam'},                // 5 huruf, silang I
+  {no: 3, r: 1, c: 3, d:'D', a:'SAJADAH', k:'Alas sholat'},              // 7 huruf, silang L
+  {no: 6, r: 1, c: 10, d:'D', a:'DOA', k:'Permohonan'},                  // 3 huruf, silang D -> COCOK SAMA NO 7
+  {no: 10, r: 1, c: 13, d:'D', a:'IKHLAS', k:'Tulus'},                   // 6 huruf, silang S
+  {no: 12, r: 3, c: 6, d:'D', a:'IMAN', k:'Kepercayaan'},                // 4 huruf, silang M -> COCOK SAMA NO 4
+  {no: 15, r: 5, c: 9, d:'D', a:'SHOLAT', k:'Ibadah 5 waktu'},           // 6 huruf, silang L
+  {no: 16, r: 7, c: 13, d:'D', a:'HAJI', k:'Ibadah'},                    // 4 huruf, silang H -> COCOK SAMA NO 13
+  {no: 18, r: 9, c: 5, d:'D', a:'RAHMAT', k:'Kasih sayang'},             // 6 huruf, silang M
  ]
 
 const gridEl = document.getElementById('grid');
