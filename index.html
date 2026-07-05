@@ -52,28 +52,26 @@
 const SIZE = 15;
 // FIX: NILA digeser ke r:1 biar nomor 2 pisah dari nomor 1
 const WORDS = [
-// ===== MENDATAR =====
-   // ===== MENDATAR 10 SOAL =====
-  {no: 1, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'},   // 5h
-  {no: 3, r: 1, c: 7, d:'A', a:'IMAN', k:'Kepercayaan'},                   // 4h
-  {no: 4, r: 2, c: 1, d:'A', a:'NABI', k:'Utusan Allah'},                  // 4h
-  {no: 5, r: 2, c: 6, d:'A', a:'DOA', k:'Permohonan'},                     // 3h
-  {no: 6, r: 3, c: 1, d:'A', a:'PUASA', k:'Rukun Islam ke-3'},             // 5h
-  {no: 7, r: 3, c: 7, d:'A', a:'ZAKAT', k:'Rukun Islam ke-4'},             // 5h
-  {no: 8, r: 4, c: 1, d:'A', a:'SABAR', k:'Tahan uji'},                    // 5h
-  {no: 9, r: 4, c: 7, d:'A', a:'HAJI', k:'Rukun Islam ke-5'},              // 4h
-  {no: 10, r: 5, c: 1, d:'A', a:'WUDHU', k:'Bersuci sebelum sholat'},      // 5h
-  {no: 11, r: 5, c: 7, d:'A', a:'ADZAN', k:'Panggilan sholat'},            // 5h
+{no: 2, r: 1, c: 1, d:'A', a:'ISLAM', k:'Agama rahmatan lil alamin'},
+  {no: 4, r: 1, c: 9, d:'A', a:'DOA', k:'Permohonan ke Allah'},
+  {no: 5, r: 3, c: 1, d:'A', a:'NABI', k:'Utusan Allah'},
+  {no: 7, r: 3, c: 10, d:'A', a:'IMAN', k:'Kepercayaan'},
+  {no: 8, r: 5, c: 1, d:'A', a:'PUASA', k:'Rukun Islam 3'},
+  {no: 9, r: 5, c: 6, d:'A', a:'ZAKAT', k:'Rukun Islam 4'},
+  {no: 11, r: 7, c: 1, d:'A', a:'SABAR', k:'Tahan uji'},
+  {no: 13, r: 7, c: 11, d:'A', a:'HAJI', k:'Rukun Islam 5'},
+  {no: 14, r: 9, c: 9, d:'A', a:'WUDHU', k:'Bersuci'},
+  {no: 17, r: 11, c: 1, d:'A', a:'ADZAN', k:'Panggilan sholat'},
 
-  // ===== MENURUN 8 SOAL =====
-  {no: 1, r: 1, c: 1, d:'D', a:'INAZ', k:'Nama lain adzan'},               // 4h I
-  {no: 2, r: 1, c: 3, d:'D', a:'SAJADAH', k:'Alas sholat'},                // 7h S
-  {no: 3, r: 1, c: 7, d:'D', a:'IMAN', k:'Rukun iman'},                    // 4h I -> COCOK NO 3A
-  {no: 4, r: 1, c: 9, d:'D', a:'TAQWA', k:'Takut kepada Allah'},           // 5h T
-  {no: 5, r: 2, c: 6, d:'D', a:'DOA', k:'Minta ke Allah'},                 // 3h D -> COCOK NO 5A
-  {no: 6, r: 3, c: 4, d:'D', a:'IKHLAS', k:'Tulus hati'},                  // 6h I
-  {no: 7, r: 4, c: 7, d:'D', a:'HAJI', k:'Ibadah ke Mekah'},               // 4h H -> COCOK NO 9A
-  {no: 8, r: 5, c: 11, d:'D', a:'BERKAH', k:'Keberkahan'}                  // 6h B
+  // ===== MENURUN 1-8 =====
+  {no: 2, r: 1, c: 1, d:'D', a:'IMAN', k:'Rukun iman'},
+  {no: 3, r: 1, c: 5, d:'D', a:'SAJADAH', k:'Alas sholat'},
+  {no: 6, r: 1, c: 10, d:'D', a:'TAQWA', k:'Takut Allah'},
+  {no: 10, r: 1, c: 13, d:'D', a:'IKHLAS', k:'Tulus hati'},
+  {no: 12, r: 3, c: 6, d:'D', a:'SYUKUR', k:'Terima kasih'},
+  {no: 15, r: 5, c: 9, d:'D', a:'SHOLAT', k:'Ibadah 5 waktu'},
+  {no: 16, r: 7, c: 13, d:'D', a:'BERKAH', k:'Keberkahan'},
+  {no: 18, r: 9, c: 5, d:'D', a:'RAHMAT', k:'Kasih sayang'}
  ]
 
 const gridEl = document.getElementById('grid');
@@ -132,7 +130,7 @@ function checkScore(){
 }
 // ===== TIMER 5 MENIT + RESET FIX =====
 const timerEl = document.getElementById('timer');
-let waktu = 600; // 10 menit = 600 detik
+let waktu = 300; // 5 menit = 300 detik
 let interval = null; 
 
 function updateTimer() {
@@ -143,7 +141,7 @@ function updateTimer() {
 
 function startTimer() {
   clearInterval(interval); 
-  updateTimer(); // Pastiin muncul 010:00 dulu, diem 1 detik
+  updateTimer(); // Pastiin muncul 005:00 dulu, diem 1 detik
   interval = setInterval(() => {
     waktu--;
     updateTimer();
